@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Admin Panel — Üyeler</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+<style>
+  :root{--red:#cc0000;--bg:#0d0d0d}
+  body{font-family:Poppins,system-ui;background:var(--bg);color:#fff;margin:0;padding:20px}
+  header{display:flex;align-items:center;justify-content:space-between;gap:12px}
+  h1{color:var(--red);margin:0}
+  .wrap{margin-top:18px}
+  .controls{display:flex;gap:8px;align-items:center}
+  .search{padding:8px;border-radius:8px;border:1px solid #222;background:#111;color:#fff}
+  table{width:100%;border-collapse:collapse;margin-top:14px}
+  th,td{padding:10px;border-bottom:1px solid #1a1a1a;text-align:left}
+  th{color:#bbb;font-size:13px}
+  td{color:#ddd;font-size:14px}
+  button{background:var(--red);border:none;padding:8px 10px;border-radius:8px;color:#fff;cursor:pointer}
+  .ghost{background:transparent;border:1px solid #333}
+  .small{font-size:13px;color:#999}
+  .badge{padding:4px 8px;border-radius:6px;font-weight:600}
+  .active{background:green;color:#fff}
+  .pending{background:orange;color:#fff}
+  .blocked{background:#444;color:#fff}
+  .modal{position:fixed;left:0;top:0;width:100%;height:100%;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,0.6)}
+  .modal-box{background:#111;padding:18px;border-radius:12px;max-width:900px;width:95%}
+  .flex{display:flex;gap:12px;align-items:center}
+  @media(max-width:800px){ table{font-size:13px} .flex{flex-direction:column;align-items:flex-start} }
+</style>
+</head>
+<body>
+
+<header>
+  <div>
+    <h1>KönigBoard — Admin Üyeler</h1>
+    <div class="small">Sadece admin yetkisine sahip kullanıcılar erişebilir</div>
+  </div>
+
+  <div class="controls">
+    <input id="searchInput" class="search" placeholder="Ara: isim, e-posta, şirket...">
+    <button id="exportBtn" class="ghost">CSV İndir</button>
+    <button id="refreshBtn" class="ghost">Yenile</button>
+    <button id="logoutBtn" class="ghost">Çıkış</button>
+  </div>
+</header>
+
+<div class="wrap">
+  <table id="usersTable">
+    <thead>
+      <tr>
+        <th>#</th><th>İsim / Şirket</th><th>E-posta</th><th>Plan</th><th>Durum</th><th>Kayıt</th><th>Aksiyon</th>
+      </tr>
+    </thead>
+    <tbody id="usersBody"></tbody>
+  </table>
+</div>
+
+<!-- Modal: detay -->
+<div id="detailModal" class="modal" style="display:none">
+  <div class="modal-box">
+    <div style="display:flex;justify-content:space-between;align-items:center">
+      <h3 id="modalTitle">Kullanıcı Detayı</h3>
+      <div><button id="closeModal" class="ghost">Kapat</button></div>
+    </div>
+    <div id="modalContent" style="margin-top:12px"></div>
+  </div>
+</div>
+
+<!-- Firebase v10 modular -->
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.11.1/firebase-app.js";
+  import { getAuth, signOut, sendPasswordResetEmail, getIdTokenResult } from "https://www.gstatic.com/firebasejs/10.11.1/firebase-auth.js";
+  import { getFirestore, collection, query, where, orderBy, limit, getDocs, doc, getDoc, updateDoc } from "https://www.gstatic.com/firebasejs/10.11.1/firebase-firestore.js";
+
+  // === Buraya kendi firebaseConfig'in ===
+  const firebaseConfig = {
+    apiKey: "AIzaSyChTIs-88nIFeSsVuF2aMFJigwITWb3lbU",
+    authDomain: "konigboard.firebaseapp.com",
+    projectId: "konigboard",
+    storageBucket: "konigboard.firebasestorage.app",
+    messagingSenderId: "542862934182",
+    appId: "1:542862934182:web:927ee1271cb5430fd4b467",
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+  const db = getFirestore(app);
+
+  // UI elemanları
+  const usersBody = document.getElementById('usersBody');
+  const searchInput = document.getElementById('searchInput');
+  const exportBtn = document.getElementById('exportBtn');
+  const refreshBtn = document.getElementById('refreshBtn');
+  const logoutBtn = document.getElementById('logoutBtn');
+  const detailModal = document.getElementById('detailModal');
+  const modalContent = document.getElementById('modalContent');
+  const closeModal = document.getElementById('closeModal');
+
+  let allUsers = []; // bellekte tut
+
+  // Önce: CURRENT USER'ın admin claim'i kontrol et
+  async function checkAdmin() {
+    const user = auth.currentUser;
+    if (!user) {
+      alert('Admin olarak giriş yapmalısın.'); location.href='login.html'; return;
+    }
+    const idTokenRes = await getIdTokenResult(user, true);
+    if (!idTokenRes.claims || !idTokenRes.claims.admin) {
+      alert('Bu sayfaya erişim iznin yok. Admin hesabı gerekli.');
+      await signOut(auth);
+      location.href='login.html';
+      return;
+    }
+  }
+
+  // Firestore'dan users koleksiyonunu çek
+  async function loadUsers() {
+    usersBody.innerHTML = '<tr><td colspan="7" class="small">Yükleniyor...</td></tr>';
+    try {
+      // Basit fetch: tüm kullanıcı dokümanlarını çek (küçük sistem için OK; büyükse pagination gerek)
+      const q = query(collection(db, 'users'), orderBy('createdAt','desc'));
+      const snap = await getDocs(q);
+      allUsers = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+      renderTable(allUsers);
+    } catch (err) {
+      console.error(err);
+      usersBody.innerHTML = '<tr><td colspan="7">Yükleme hatası</td></tr>';
+    }
+  }
+
+  function renderTable(list) {
+    if (!list.length) {
+      usersBody.innerHTML = '<tr><td colspan="7">Kayıtlı kullanıcı yok</td></tr>';
+      return;
+    }
+    usersBody.innerHTML = '';
+    list.forEach((u, i) => {
+      const tr = document.createElement('tr');
+      tr.innerHTML = `
+        <td>${i+1}</td>
+        <td>${u.name || u.companyName || '—'}<br><span class="small">${u.authorized ? 'Yetkili: '+u.authorized : ''}</span></td>
+        <td>${u.email || '—'}</td>
+        <td>${u.plan || '<span class="small">(bilinmiyor)</span>'}</td>
+        <td><span class="badge ${u.status==='active'?'active': u.status==='pending'?'pending':'blocked'}">${u.status || 'pending'}</span></td>
+        <td class="small">${u.createdAt? new Date(u.createdAt.seconds ? u.createdAt.seconds*1000 : u.createdAt).toLocaleString() : '-'}</td>
+        <td>
+          <div style="display:flex;gap:8px">
+            <button class="ghost" data-id="${u.id}" data-action="view">Görüntüle</button>
+            <button data-id="${u.id}" data-action="free">Ücretsiz Ver</button>
+            <button data-id="${u.id}" data-action="reset">Şifre Gönder</button>
+            <button data-id="${u.id}" data-action="toggle">${u.status==='active'?'Kapat':'Aktif Et'}</button>
+          </div>
+        </td>
+      `;
+      usersBody.appendChild(tr);
+    });
+  }
+
+  // event delegation: butonlara tıklama
+  usersBody.addEventListener('click', async (e) => {
+    const btn = e.target.closest('button');
+    if (!btn) return;
+    const uid = btn.getAttribute('data-id');
+    const action = btn.getAttribute('data-action');
+
+    if (action === 'view') {
+      openDetail(uid);
+    } else if (action === 'free') {
+      if (!confirm('Bu kullanıcıya ücretsiz üyelik vermek istiyor musun?')) return;
+      await grantFree(uid);
+      loadUsers();
+      alert('Ücretsiz yapıldı.');
+    } else if (action === 'reset') {
+      const user = allUsers.find(x=>x.id===uid);
+      if (!user || !user.email) return alert('E-posta yok.');
+      try {
+        await sendPasswordResetEmail(auth, user.email);
+        alert('Şifre sıfırlama e-postası gönderildi.');
+      } catch(err) {
+        alert('Hata: ' + err.message);
+      }
+    } else if (action === 'toggle') {
+      await toggleStatus(uid);
+      loadUsers();
+    }
+  });
+
+  // detay modal aç
+  async function openDetail(uid) {
+    modalContent.innerHTML = 'Yükleniyor...';
+    detailModal.style.display = 'flex';
+    const docRef = doc(db,'users',uid);
+    const snap = await getDoc(docRef);
+    if (!snap.exists()) { modalContent.innerText = 'Kullanıcı bulunamadı'; return; }
+    const u = { id: snap.id, ...snap.data() };
+    let html = `<div style="display:flex;gap:20px;align-items:flex-start">
+      <div style="flex:1">
+        <h3>${u.name || u.companyName || '—'}</h3>
+        <p class="small">E-posta: ${u.email || '-'}</p>
+        <p class="small">Telefon: ${u.phone || '-'}</p>
+        <p class="small">Tip: ${u.type || '-'}</p>
+        <p class="small">Plan: ${u.plan || '-'}</p>
+        <p class="small">Durum: ${u.status || '-'}</p>
+        <p class="small">Kayıt: ${u.createdAt ? new Date(u.createdAt.seconds ? u.createdAt.seconds*1000 : u.createdAt).toLocaleString() : '-'}</p>
+      </div>
+      <div style="width:320px">
+        <h4>Çalışanlar</h4>
+        <div id="employeesList" class="small">Yükleniyor...</div>
+      </div>
+    </div>`;
+    modalContent.innerHTML = html;
+
+    // çalışanları çek (opsiyonel: users/{uid}/employees alt koleksiyonu)
+    try {
+      const empSnap = await getDocs(collection(db, 'users', uid, 'employees'));
+      if (empSnap.empty) document.getElementById('employeesList').innerText = 'Çalışan yok';
+      else {
+        const list = empSnap.docs.map(d => d.data());
+        document.getElementById('employeesList').innerHTML = list.map(x => `<div>- ${x.name || x.title} (${x.role||''})</div>`).join('');
+      }
+    } catch(err){
+      document.getElementById('employeesList').innerText = 'Yüklenemedi';
+    }
+  }
+
+  closeModal.addEventListener('click', ()=> detailModal.style.display='none');
+
+  // Yönetici işlemleri: ücretsiz verme
+  async function grantFree(uid) {
+    const docRef = doc(db,'users',uid);
+    await updateDoc(docRef, { plan: 'free', subscription: { active: true, method: 'admin-grant', updatedAt: new Date().toISOString() }});
+  }
+
+  // toggle status active <-> blocked
+  async function toggleStatus(uid) {
+    const dref = doc(db,'users',uid);
+    const snap = await getDoc(dref);
+    if (!snap.exists()) return alert('Kullanıcı yok');
+    const cur = snap.data();
+    const newStatus = (cur.status === 'active') ? 'blocked' : 'active';
+    await updateDoc(dref, { status: newStatus });
+    alert('Durum güncellendi: '+newStatus);
+  }
+
+  // CSV export
+  exportBtn.addEventListener('click', ()=> {
+    if (!allUsers.length) return alert('Listede kullanıcı yok');
+    const rows = [['ID','İsim','E-posta','Plan','Durum','Kayıt Tarihi']];
+    allUsers.forEach(u => rows.push([u.id, u.name||u.companyName||'', u.email||'', u.plan||'', u.status||'', u.createdAt? (u.createdAt.seconds? new Date(u.createdAt.seconds*1000).toLocaleString(): u.createdAt): '']));
+    const csv = rows.map(r => r.map(cell => `"${(String(cell||'')).replace(/"/g,'""')}"`).join(',')).join('\n');
+    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a'); a.href = url; a.download = 'users.csv'; a.click();
+    URL.revokeObjectURL(url);
+  });
+
+  // search & refresh & logout
+  searchInput.addEventListener('input', ()=> {
+    const q = searchInput.value.trim().toLowerCase();
+    if (!q) return renderTable(allUsers);
+    const filtered = allUsers.filter(u => (u.name||'').toLowerCase().includes(q) || (u.email||'').toLowerCase().includes(q) || (u.companyName||'').toLowerCase().includes(q));
+    renderTable(filtered);
+  });
+
+  refreshBtn.addEventListener('click', loadUsers);
+  logoutBtn.addEventListener('click', async ()=> { await signOut(auth); location.href='login.html'; });
+
+  // Sayfa yüklenince: auth state bekle, sonra admin check yap ve yükle
+  auth.onAuthStateChanged(async (user) => {
+    if (!user) { location.href='login.html'; return; }
+    // admin claim kontrolü
+    const idTokenRes = await getIdTokenResult(user);
+    if (!idTokenRes.claims || !idTokenRes.claims.admin) {
+      alert('Admin yetkiniz yok.'); await signOut(auth); location.href='login.html'; return;
+    }
+    loadUsers();
+  });
+
+</script>
+</body>
+</html>
