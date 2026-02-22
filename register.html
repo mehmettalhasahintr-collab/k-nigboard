@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Kayıt Ol – KönigBoard</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --red: #cc0000;
+      --dark: #0d0d0d;
+      --gray: #1a1a1a;
+    }
+    body {
+      font-family: "Poppins", sans-serif;
+      background: var(--dark);
+      color: #fff;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+    }
+    .container {
+      max-width: 600px;
+      background: #141414;
+      padding: 40px;
+      border-radius: 16px;
+      box-shadow: 0 0 25px rgba(0, 0, 0, 0.3);
+    }
+    h1 {
+      text-align: center;
+      color: var(--red);
+      margin-bottom: 20px;
+    }
+    label {
+      display: block;
+      color: #ccc;
+      font-weight: 600;
+      margin: 10px 0 5px;
+    }
+    input,
+    select {
+      width: 100%;
+      padding: 12px;
+      margin-bottom: 15px;
+      border: none;
+      border-radius: 8px;
+      background: #1f1f1f;
+      color: #fff;
+      font-size: 15px;
+    }
+    input:focus {
+      outline: 2px solid var(--red);
+    }
+    button {
+      width: 100%;
+      padding: 14px;
+      background: var(--red);
+      border: none;
+      border-radius: 8px;
+      color: #fff;
+      font-weight: 600;
+      font-size: 16px;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+    button:hover {
+      background: #a80000;
+    }
+    .type-select {
+      display: flex;
+      gap: 10px;
+      justify-content: center;
+      margin-bottom: 20px;
+    }
+    .type-select button {
+      flex: 1;
+      padding: 10px;
+      border: 1px solid #333;
+      background: #1a1a1a;
+      color: #fff;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: 600;
+      transition: 0.3s;
+    }
+    .type-select button.active {
+      background: var(--red);
+      border-color: var(--red);
+    }
+    small {
+      display: block;
+      margin-top: 10px;
+      text-align: center;
+      color: #999;
+    }
+    #msg {
+      margin-top: 10px;
+      text-align: center;
+      font-size: 14px;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <h1>Kayıt Ol</h1>
+
+    <div class="type-select">
+      <button id="btnPersonal" class="active">Bireysel</button>
+      <button id="btnCompany">Kurumsal</button>
+    </div>
+
+    <form id="registerForm">
+      <div id="personalFields">
+        <label>Ad Soyad</label>
+        <input type="text" id="fullname" required />
+
+        <label>E-posta</label>
+        <input type="email" id="email" required />
+
+        <label>Şifre</label>
+        <input type="password" id="password" required />
+      </div>
+
+      <div id="companyFields" style="display:none;">
+        <label>Şirket Adı</label>
+        <input type="text" id="companyName" />
+
+        <label>Yetkili Kişi</label>
+        <input type="text" id="authorized" />
+
+        <label>Vergi Numarası</label>
+        <input type="text" id="taxNumber" />
+
+        <label>E-posta</label>
+        <input type="email" id="emailCompany" />
+
+        <label>Şifre</label>
+        <input type="password" id="passwordCompany" />
+      </div>
+
+      <button type="submit">Kaydı Başlat</button>
+      <div id="msg"></div>
+      <small>Zaten hesabın var mı? <a href="login.html" style="color:var(--red);text-decoration:none;">Giriş Yap</a></small>
+    </form>
+  </div>
+
+  <!-- Firebase SDK (v9 Modular) -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.2/firebase-app.js";
+    import { getAuth, createUserWithEmailAndPassword, sendEmailVerification } from "https://www.gstatic.com/firebasejs/10.7.2/firebase-auth.js";
+    import { getFirestore, doc, setDoc } from "https://www.gstatic.com/firebasejs/10.7.2/firebase-firestore.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyChTIs-88nIFeSsVuF2aMFJigwITWb3lbU",
+      authDomain: "konigboard.firebaseapp.com",
+      projectId: "konigboard",
+      storageBucket: "konigboard.firebasestorage.app",
+      messagingSenderId: "542862934182",
+      appId: "1:542862934182:web:927ee1271cb5430fd4b467",
+      measurementId: "G-J9ZJSNMCLK"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+
+    const btnPersonal = document.getElementById("btnPersonal");
+    const btnCompany = document.getElementById("btnCompany");
+    const personalFields = document.getElementById("personalFields");
+    const companyFields = document.getElementById("companyFields");
+
+    btnPersonal.onclick = () => {
+      btnPersonal.classList.add("active");
+      btnCompany.classList.remove("active");
+      personalFields.style.display = "block";
+      companyFields.style.display = "none";
+    };
+
+    btnCompany.onclick = () => {
+      btnCompany.classList.add("active");
+      btnPersonal.classList.remove("active");
+      personalFields.style.display = "none";
+      companyFields.style.display = "block";
+    };
+
+    const form = document.getElementById("registerForm");
+    const msg = document.getElementById("msg");
+
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
+
+      const isPersonal = btnPersonal.classList.contains("active");
+      const email = isPersonal ? emailPersonal.value : emailCompany.value;
+      const password = isPersonal ? password.value : passwordCompany.value;
+      const name = isPersonal ? fullname.value : companyName.value;
+
+      try {
+        const cred = await createUserWithEmailAndPassword(auth, email, password);
+        await sendEmailVerification(cred.user);
+
+        await setDoc(doc(db, "users", cred.user.uid), {
+          type: isPersonal ? "bireysel" : "kurumsal",
+          name: name,
+          email: email,
+          createdAt: new Date().toISOString(),
+          status: isPersonal ? "active" : "pending"
+        });
+
+        msg.style.color = "limegreen";
+        msg.innerText = "✅ Kayıt başarılı! Lütfen e-posta kutunu kontrol et ve doğrulama linkine tıkla.";
+      } catch (err) {
+        console.error(err);
+        msg.style.color = "tomato";
+        msg.innerText = "❌ Hata: " + err.message;
+      }
+    });
+  </script>
+</body>
+</html>

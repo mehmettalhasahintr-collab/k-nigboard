@@ -1,0 +1,1670 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1.0">
+  <title>KönigBoard – Kurumsal Yönetim Platformu</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --red:#cc0000; --dark:#0d0d0d; --gray:#1a1a1a; --light:#f5f5f5;
+    }
+    *{margin:0;padding:0;box-sizing:border-box;}
+    body{font-family:'Poppins',sans-serif;background:var(--dark);color:#fff;overflow-x:hidden;}
+    header{display:flex;justify-content:space-between;align-items:center;padding:20px 8%;position:sticky;top:0;background:rgba(0,0,0,0.8);backdrop-filter:blur(10px);z-index:100;}
+    header img{height:40px;}
+    nav a{margin-left:25px;color:#fff;text-decoration:none;font-weight:500;transition:0.3s;}
+    nav a:hover{color:var(--red);}
+    .hero{padding:140px 8% 100px;text-align:center;background:linear-gradient(180deg,var(--gray),var(--dark));}
+    .hero h1{font-size:56px;color:var(--red);margin-bottom:20px;}
+    .hero p{font-size:18px;color:#ccc;max-width:720px;margin:auto;}
+    .hero-buttons{margin-top:40px;}
+    .hero button{background:var(--red);color:#fff;border:none;padding:14px 28px;border-radius:8px;margin:8px;font-size:16px;cursor:pointer;transition:0.3s;}
+    .hero button:hover{background:#a80000;transform:translateY(-3px);}
+    .section{padding:100px 8%;text-align:center;}
+    .section h2{font-size:34px;color:var(--red);margin-bottom:60px;position:relative;}
+    .section h2::after{content:"";width:60px;height:3px;background:var(--red);display:block;margin:12px auto 0;}
+    .features{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:30px;}
+    .feature{background:#141414;padding:30px;border-radius:14px;transition:transform 0.3s;}
+    .feature:hover{transform:translateY(-6px);}
+    .feature h3{color:#fff;margin-bottom:10px;}
+    .feature p{color:#aaa;font-size:15px;}
+    .about{display:flex;flex-wrap:wrap;align-items:center;gap:40px;justify-content:center;}
+    .about img{width:400px;border-radius:14px;}
+    .about-text{max-width:500px;text-align:left;}
+    .about-text h3{color:var(--red);font-size:28px;margin-bottom:15px;}
+    .about-text p{color:#ccc;line-height:1.6;}
+    .pricing{display:flex;flex-wrap:wrap;justify-content:center;gap:30px;margin-top:40px;}
+    .plan{background:#141414;border:1px solid #222;border-radius:14px;padding:40px;width:280px;transition:0.3s;}
+    .plan:hover{transform:translateY(-5px);border-color:var(--red);}
+    .plan h3{color:#fff;margin-bottom:8px;}
+    .plan p{font-size:26px;font-weight:600;margin-bottom:20px;color:var(--red);}
+    .plan ul{list-style:none;margin-bottom:20px;text-align:left;}
+    .plan ul li{color:#bbb;margin:6px 0;font-size:14px;}
+    .plan button{background:var(--red);border:none;color:#fff;padding:10px 20px;border-radius:8px;font-weight:600;cursor:pointer;}
+    .plan button:hover{background:#a80000;}
+    .cta{background:linear-gradient(90deg,var(--red),#b00000);text-align:center;padding:80px 20px;border-radius:20px;color:#fff;margin:100px 8%;}
+    .cta h2{font-size:32px;margin-bottom:20px;}
+    .cta p{font-size:16px;margin-bottom:30px;color:#f3f3f3;}
+    .cta button{background:#fff;color:var(--red);border:none;padding:12px 26px;border-radius:8px;font-weight:700;cursor:pointer;}
+    .cta button:hover{background:#f2f2f2;}
+    footer{background:#111;text-align:center;padding:40px;color:#888;font-size:14px;margin-top:100px;}
+    @media(max-width:800px){
+      .hero h1{font-size:42px;}
+      .about{flex-direction:column;}
+      .about img{width:100%;}
+      .cta{margin:60px 4%;}
+    }
+  </style>
+</head>
+<body>
+
+ <header class="site-header">
+  <div class="brand">
+    <img src="https://i.hizliresim.com/joy286z.png" alt="KönigBoard Logo" class="logo">
+  </div>
+
+  <nav id="mainNav" class="main-nav" aria-label="Ana Navigasyon">
+    <a href="#ozellikler">Özellikler</a>
+    <a href="#hakkinda">Hakkında</a>
+    <a href="#fiyat">Fiyatlandırma</a>
+    <a href="#iletisim">İletişim</a>
+  </nav>
+
+  <div class="auth-buttons">
+    <button class="login-btn" onclick="window.location.href='login.html'">Giriş Yap</button>
+    <button class="signup-btn" onclick="window.location.href='register.html'">Kayıt Ol</button>
+    <button class="menu-toggle" id="menuToggle" aria-expanded="false" aria-controls="mainNav">☰</button>
+  </div>
+</header>
+
+<style>
+/* === HEADER === */
+.site-header {
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  padding:18px 8%;
+  position:sticky;
+  top:0;
+  background:rgba(0,0,0,0.85);
+  backdrop-filter:blur(12px);
+  border-bottom:1px solid rgba(255,255,255,0.05);
+  z-index:1000;
+  transition:all 0.3s ease;
+}
+
+.logo {
+  height:70px;
+  transition:all 0.3s ease;
+}
+
+/* === NAV === */
+.main-nav {
+  display:flex;
+  gap:30px;
+  align-items:center;
+}
+.main-nav a {
+  color:#fff;
+  text-decoration:none;
+  font-weight:500;
+  transition:color .2s;
+}
+.main-nav a:hover { color:#cc0000; }
+
+/* === AUTH BUTTONS === */
+.auth-buttons {
+  display:flex;
+  align-items:center;
+  gap:12px;
+}
+
+.login-btn, .signup-btn {
+  padding:8px 16px;
+  border-radius:8px;
+  font-weight:600;
+  cursor:pointer;
+  border:1px solid #cc0000;
+  background:transparent;
+  color:#fff;
+  transition:0.3s;
+}
+
+.login-btn:hover {
+  background:#cc0000;
+  color:#fff;
+}
+
+.signup-btn {
+  background:#cc0000;
+  border:none;
+}
+
+.signup-btn:hover {
+  background:#a80000;
+}
+
+/* === MENU TOGGLE (MOBILE) === */
+.menu-toggle {
+  display:none;
+  font-size:28px;
+  background:transparent;
+  border:none;
+  color:#fff;
+  cursor:pointer;
+  padding:6px;
+}
+
+/* === RESPONSIVE === */
+@media (max-width:850px) {
+  .main-nav {
+    display:none;
+    flex-direction:column;
+    position:absolute;
+    top:80px;
+    left:0;
+    right:0;
+    background:rgba(0,0,0,0.95);
+    padding:20px 0;
+    gap:0;
+    border-top:1px solid rgba(255,255,255,0.05);
+  }
+  .main-nav a {
+    padding:12px 0;
+    width:100%;
+    text-align:center;
+  }
+  body.nav-open .main-nav {
+    display:flex;
+  }
+  .menu-toggle {
+    display:block;
+  }
+}
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  const toggle = document.getElementById('menuToggle');
+  const nav = document.getElementById('mainNav');
+  const logo = document.querySelector('.logo');
+
+  // Mobil menü açma/kapama
+  toggle.addEventListener('click', () => {
+    document.body.classList.toggle('nav-open');
+    const expanded = document.body.classList.contains('nav-open');
+    toggle.setAttribute('aria-expanded', expanded);
+  });
+
+  // Scroll olunca logo küçültme
+  window.addEventListener('scroll', () => {
+    if (window.scrollY > 60) {
+      logo.style.height = '50px';
+    } else {
+      logo.style.height = '70px';
+    }
+  });
+
+  // Ekran genişleyince menüyü sıfırla
+  window.addEventListener('resize', () => {
+    if (window.innerWidth > 850 && document.body.classList.contains('nav-open')) {
+      document.body.classList.remove('nav-open');
+      toggle.setAttribute('aria-expanded', 'false');
+    }
+  });
+});
+</script>
+
+  <section class="hero" id="hero">
+  <div class="hero-content">
+    <div class="hero-text">
+      <h1>Kurumsal Yönetimin Yeni Nesli</h1>
+      <p>
+        KönigBoard, üretimden muhasebeye kadar tüm süreçleri tek platformda birleştirir.  
+        Akıllı raporlar, anlık veri analizi ve tam kontrol artık elinizde.
+      </p>
+
+      <div class="hero-buttons">
+        <button class="demo-btn" onclick="window.location.href='demo.html'">🎬 Demo İzle</button>
+        <button class="start-btn" onclick="window.location.href='register.html'">💼 Abonelik Başlat</button>
+      </div>
+    </div>
+
+    <div class="hero-visual">
+      <img src="https://i.hizliresim.com/joy286z.png" alt="KönigBoard Ekran">
+    </div>
+  </div>
+</section>
+
+<style>
+.hero {
+  position: relative;
+  padding: 140px 8% 120px;
+  background: radial-gradient(circle at top left, #cc0000 0%, #0d0d0d 60%);
+  overflow: hidden;
+  color: #fff;
+  animation: fadeInHero 1.4s ease-in-out;
+}
+
+@keyframes fadeInHero {
+  from { opacity: 0; transform: translateY(30px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.hero::before {
+  content: "";
+  position: absolute;
+  top: -100px;
+  right: -100px;
+  width: 500px;
+  height: 500px;
+  background: rgba(255, 0, 0, 0.15);
+  border-radius: 50%;
+  filter: blur(100px);
+  z-index: 0;
+}
+
+.hero-content {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 40px;
+  position: relative;
+  z-index: 1;
+}
+
+.hero-text {
+  flex: 1 1 460px;
+  max-width: 600px;
+}
+
+.hero-text h1 {
+  font-size: 56px;
+  font-weight: 700;
+  color: #fff;
+  margin-bottom: 20px;
+  line-height: 1.2;
+}
+
+.hero-text p {
+  font-size: 18px;
+  color: #ccc;
+  margin-bottom: 40px;
+  line-height: 1.6;
+}
+
+.hero-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+.hero-buttons button {
+  border: none;
+  border-radius: 10px;
+  padding: 14px 28px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.demo-btn {
+  background: transparent;
+  border: 1px solid #cc0000;
+  color: #fff;
+}
+
+.demo-btn:hover {
+  background: #cc0000;
+  transform: scale(1.05);
+}
+
+.start-btn {
+  background: #cc0000;
+  color: #fff;
+  box-shadow: 0 0 20px rgba(204,0,0,0.4);
+}
+
+.start-btn:hover {
+  background: #a80000;
+  transform: scale(1.05);
+}
+
+.hero-visual {
+  flex: 1 1 400px;
+  text-align: center;
+  animation: floatVisual 4s ease-in-out infinite;
+}
+
+@keyframes floatVisual {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
+}
+
+.hero-visual img {
+  width: 100%;
+  max-width: 520px;
+  border-radius: 20px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
+  transform: perspective(1000px) rotateY(-8deg);
+  transition: transform 0.8s ease;
+}
+
+.hero-visual img:hover {
+  transform: perspective(1000px) rotateY(0deg);
+}
+
+@media(max-width:900px){
+  .hero {
+    padding: 100px 5% 80px;
+  }
+  .hero-text h1 {
+    font-size: 40px;
+  }
+  .hero-content {
+    flex-direction: column;
+    text-align: center;
+  }
+  .hero-visual img {
+    max-width: 380px;
+    margin-top: 20px;
+  }
+}
+</style>
+
+  <section class="section features-section" id="ozellikler">
+  <h2>Platform Özellikleri</h2>
+  <p class="features-subtitle">KönigBoard, üretimden muhasebeye kadar tüm operasyonları tek bir platformda toplar.</p>
+
+  <div class="features-grid">
+
+    <div class="feature-card">
+      <div class="icon">📊</div>
+      <h3>Yönetim Paneli</h3>
+      <p>Gerçek zamanlı raporlar, görev dağılımı, departman bazlı analiz ve performans ölçümü.</p>
+    </div>
+
+    <div class="feature-card">
+      <div class="icon">💰</div>
+      <h3>Muhasebe Otomasyonu</h3>
+      <p>Gelir-gider, banka, kasa, cari hesap ve borç-alacak takibi yapay zeka destekli analizle birleşir.</p>
+    </div>
+
+    <div class="feature-card">
+      <div class="icon">🏭</div>
+      <h3>Üretim Takibi</h3>
+      <p>Hammadde girişinden sevkiyata kadar tüm süreçleri dijitalleştirir, üretim hatlarını anlık izler.</p>
+    </div>
+
+    <div class="feature-card">
+      <div class="icon">🚚</div>
+      <h3>Lojistik Yönetimi</h3>
+      <p>Teslimat, rota, gecikme ve stok durumunu otomatik analiz eder, sevkiyat planlamasını optimize eder.</p>
+    </div>
+
+    <div class="feature-card">
+      <div class="icon">🧠</div>
+      <h3>Ar-Ge Entegrasyonu</h3>
+      <p>Yeni projeler, prototipler ve ürün test verileriyle üretim performansını artırır.</p>
+    </div>
+
+    <div class="feature-card">
+      <div class="icon">🔒</div>
+      <h3>Veri Güvenliği</h3>
+      <p>256-bit şifreleme, günlük yedekleme ve çok katmanlı erişim kontrolü ile tam veri güvenliği sağlar.</p>
+    </div>
+
+  </div>
+</section>
+
+<style>.features-section {
+  background: linear-gradient(180deg, #0d0d0d 0%, #1a0000 100%);
+  color: #fff;
+  text-align: center;
+  padding: 100px 8%;
+}
+
+.features-section h2 {
+  color: #cc0000;
+  font-size: 34px;
+  margin-bottom: 15px;
+}
+
+.features-subtitle {
+  color: #bbb;
+  font-size: 16px;
+  margin-bottom: 60px;
+}
+
+.features-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 30px;
+  justify-content: center;
+}
+
+.feature-card {
+  background: #141414;
+  border: 1px solid #222;
+  border-radius: 16px;
+  padding: 30px;
+  transition: all 0.3s ease;
+  box-shadow: 0 0 20px rgba(0,0,0,0.2);
+  position: relative;
+  overflow: hidden;
+}
+
+.feature-card::before {
+  content: "";
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: radial-gradient(circle, rgba(204,0,0,0.15), transparent 60%);
+  opacity: 0;
+  transition: opacity 0.4s ease;
+}
+
+.feature-card:hover::before {
+  opacity: 1;
+}
+
+.feature-card:hover {
+  transform: translateY(-8px);
+  border-color: #cc0000;
+  box-shadow: 0 0 25px rgba(204,0,0,0.3);
+}
+
+.icon {
+  font-size: 40px;
+  margin-bottom: 18px;
+  color: #cc0000;
+  transition: transform 0.3s;
+}
+
+.feature-card:hover .icon {
+  transform: scale(1.15);
+}
+
+.feature-card h3 {
+  color: #fff;
+  font-size: 18px;
+  margin-bottom: 10px;
+}
+
+.feature-card p {
+  color: #aaa;
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+@media (max-width: 700px) {
+  .features-section h2 {
+    font-size: 28px;
+  }
+  .features-subtitle {
+    font-size: 14px;
+  }
+}
+</style>
+
+
+<section class="section stats-section">
+  <div class="stats-overlay"></div>
+  <h2>Canlı Verilerle Güven Kazanın</h2>
+  <p class="stats-subtitle">
+    KönigBoard altyapısı, yüzlerce üretim tesisinde aktif olarak çalışıyor ve her saniye veri işliyor.
+  </p>
+
+  <div class="stats-grid">
+    <div class="stat">
+      <h3><span class="count" data-target="325">0</span>+</h3>
+      <p>Aktif Şirket</p>
+    </div>
+
+    <div class="stat">
+      <h3><span class="count" data-target="4820">0</span>+</h3>
+      <p>Kayıtlı Kullanıcı</p>
+    </div>
+
+    <div class="stat">
+      <h3><span class="count" data-target="1200000">0</span>+</h3>
+      <p>Günlük Veri Kaydı</p>
+    </div>
+
+    <div class="stat">
+      <h3><span class="count" data-target="99.9">0</span>%</h3>
+      <p>Sistem Sürekliliği</p>
+    </div>
+  </div>
+</section>
+
+
+<style>.stats-section {
+  position: relative;
+  background: linear-gradient(180deg, #0a0a0a 0%, #1a0000 100%);
+  color: #fff;
+  text-align: center;
+  padding: 100px 8%;
+  overflow: hidden;
+}
+
+.stats-overlay {
+  position: absolute;
+  top: 0; left: 0; width: 100%; height: 100%;
+  background: radial-gradient(circle at center, rgba(204,0,0,0.15), transparent 70%);
+  filter: blur(80px);
+  z-index: 0;
+}
+
+.stats-section h2 {
+  font-size: 34px;
+  color: #cc0000;
+  margin-bottom: 15px;
+  position: relative;
+  z-index: 2;
+}
+
+.stats-subtitle {
+  color: #bbb;
+  font-size: 16px;
+  max-width: 700px;
+  margin: 0 auto 60px;
+  position: relative;
+  z-index: 2;
+}
+
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 50px;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  z-index: 2;
+}
+
+.stat {
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 16px;
+  padding: 40px 20px;
+  transition: all 0.3s ease;
+  box-shadow: 0 0 15px rgba(0,0,0,0.3);
+}
+
+.stat:hover {
+  transform: translateY(-6px);
+  border-color: #cc0000;
+  box-shadow: 0 0 25px rgba(204,0,0,0.3);
+}
+
+.stat h3 {
+  font-size: 42px;
+  color: #fff;
+  margin-bottom: 10px;
+}
+
+.stat p {
+  color: #aaa;
+  font-size: 15px;
+}
+
+@media(max-width:700px) {
+  .stats-section h2 { font-size: 28px; }
+  .stat h3 { font-size: 36px; }
+}
+</style>
+
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+  const counters = document.querySelectorAll('.count');
+  const speed = 150; // ne kadar hızlı saysın
+
+  const startCounting = () => {
+    counters.forEach(counter => {
+      const updateCount = () => {
+        const target = +counter.getAttribute('data-target');
+        const count = +counter.innerText;
+        const inc = target / speed;
+
+        if (count < target) {
+          counter.innerText = Math.ceil(count + inc);
+          setTimeout(updateCount, 15);
+        } else {
+          counter.innerText = target.toLocaleString('tr-TR');
+        }
+      };
+      updateCount();
+    });
+  };
+
+  // Görünür olunca başlasın
+  const section = document.querySelector('.stats-section');
+  const observer = new IntersectionObserver((entries) => {
+    if (entries[0].isIntersecting) {
+      startCounting();
+      observer.unobserve(section);
+    }
+  }, { threshold: 0.3 });
+
+  observer.observe(section);
+});
+</script>
+
+
+<section class="section advantages-section" id="avantajlar">
+  <div class="advantages-content">
+
+    <div class="advantages-text">
+      <h2>KönigBoard Avantajları</h2>
+      <p class="adv-subtitle">
+        Yalnızca bir yazılım değil, işletmenizin dijital omurgası.  
+        Üretimden yönetime kadar tüm karar süreçlerini hızlandırır.
+      </p>
+
+      <div class="adv-list">
+        <div class="adv-item">
+          <div class="adv-icon">⚙️</div>
+          <div class="adv-info">
+            <h3>Otomatik Süreç Yönetimi</h3>
+            <p>Tüm üretim hatları, stok hareketleri ve muhasebe kayıtları otomatik olarak senkronize edilir.</p>
+          </div>
+        </div>
+
+        <div class="adv-item">
+          <div class="adv-icon">🔗</div>
+          <div class="adv-info">
+            <h3>Entegre Sistem Altyapısı</h3>
+            <p>ERP, CRM, üretim, finans ve lojistik sistemlerini tek bir panelde birleştirir.</p>
+          </div>
+        </div>
+
+        <div class="adv-item">
+          <div class="adv-icon">🛡️</div>
+          <div class="adv-info">
+            <h3>Yüksek Güvenlik ve Yedekleme</h3>
+            <p>256-bit şifreleme, günlük yedekleme ve 7/24 güvenlik denetimiyle tüm verileriniz koruma altında.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="advantages-image">
+      <img src="https://images.unsplash.com/photo-1581091215367-59ab6cfd8b4d?auto=format&fit=crop&w=1000&q=60" alt="KönigBoard Dijital Fabrika">
+    </div>
+
+  </div>
+</section>
+
+
+<style>.advantages-section {
+  background: linear-gradient(135deg, #0d0d0d 0%, #1a0000 100%);
+  color: #fff;
+  padding: 100px 8%;
+}
+
+.advantages-content {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 60px;
+}
+
+.advantages-text {
+  flex: 1 1 520px;
+}
+
+.advantages-text h2 {
+  font-size: 34px;
+  color: #cc0000;
+  margin-bottom: 15px;
+}
+
+.adv-subtitle {
+  color: #bbb;
+  font-size: 16px;
+  margin-bottom: 40px;
+  line-height: 1.6;
+}
+
+.adv-list {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.adv-item {
+  display: flex;
+  align-items: flex-start;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 14px;
+  padding: 18px 20px;
+  transition: all 0.3s ease;
+  position: relative;
+}
+
+.adv-item:hover {
+  transform: translateY(-5px);
+  border-color: #cc0000;
+  box-shadow: 0 0 25px rgba(204, 0, 0, 0.2);
+}
+
+.adv-icon {
+  font-size: 32px;
+  margin-right: 18px;
+  color: #cc0000;
+  transition: transform 0.3s ease;
+}
+
+.adv-item:hover .adv-icon {
+  transform: scale(1.15) rotate(8deg);
+}
+
+.adv-info h3 {
+  font-size: 18px;
+  color: #fff;
+  margin-bottom: 6px;
+}
+
+.adv-info p {
+  font-size: 14px;
+  color: #aaa;
+  line-height: 1.6;
+}
+
+.advantages-image {
+  flex: 1 1 460px;
+  text-align: center;
+}
+
+.advantages-image img {
+  width: 100%;
+  max-width: 500px;
+  border-radius: 18px;
+  box-shadow: 0 15px 50px rgba(0, 0, 0, 0.4);
+  transition: transform 0.6s ease;
+}
+
+.advantages-image img:hover {
+  transform: scale(1.03);
+}
+
+@media (max-width: 900px) {
+  .advantages-content {
+    flex-direction: column;
+    text-align: center;
+  }
+  .advantages-image img {
+    max-width: 420px;
+    margin-top: 30px;
+  }
+}
+</style>
+
+
+  <section class="section about-section" id="hakkinda">
+  <div class="about-container">
+
+    <div class="about-image">
+      <img src="https://images.unsplash.com/photo-1581091215367-59ab6cfd8b4d?auto=format&fit=crop&w=1000&q=60" 
+           alt="KönigBoard Dijital Üretim Platformu">
+    </div>
+
+    <div class="about-content">
+      <h2>Hakkında</h2>
+      <h3>KönigBoard Nedir?</h3>
+      <p>
+        <b>KönigBoard</b>, üretimden muhasebeye, insan kaynağından lojistiğe kadar tüm iş süreçlerini tek bir dijital merkezde toplar.  
+        Yalnızca bir yazılım değil, işletmenizin **yönetim zekasıdır**.  
+        Her veri, her işlem ve her karar, yapay zeka destekli analizlerle yönlendirilir.
+      </p>
+
+      <h3>Vizyon & Misyon</h3>
+      <p>
+        Amacımız; endüstriyel dijitalleşmeyi hızlandırmak, işletmelerin global rekabette **veri odaklı kararlar** almasını sağlamaktır.  
+        KönigBoard, Türkiye’nin teknoloji gücü olarak üretim süreçlerini akıllı hale getirir ve geleceğin fabrikalarını bugünden inşa eder.
+      </p>
+
+      <div class="about-buttons">
+        <button class="about-btn primary">📘 Daha Fazla Bilgi</button>
+        <button class="about-btn secondary">📩 İletişime Geç</button>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+
+<style>
+.about-section {
+  background: linear-gradient(180deg, #0d0d0d 0%, #1a0000 100%);
+  color: #fff;
+  padding: 100px 8%;
+}
+
+.about-container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 60px;
+}
+
+.about-image {
+  flex: 1 1 460px;
+  text-align: center;
+}
+
+.about-image img {
+  width: 100%;
+  max-width: 500px;
+  border-radius: 20px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
+  transition: transform 0.6s ease, box-shadow 0.6s ease;
+}
+
+.about-image img:hover {
+  transform: scale(1.03);
+  box-shadow: 0 25px 70px rgba(204, 0, 0, 0.3);
+}
+
+.about-content {
+  flex: 1 1 520px;
+}
+
+.about-content h2 {
+  font-size: 34px;
+  color: #cc0000;
+  margin-bottom: 15px;
+}
+
+.about-content h3 {
+  font-size: 22px;
+  color: #fff;
+  margin-top: 25px;
+}
+
+.about-content p {
+  color: #bbb;
+  font-size: 15px;
+  line-height: 1.8;
+  margin-top: 10px;
+}
+
+.about-buttons {
+  margin-top: 40px;
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.about-btn {
+  border: none;
+  border-radius: 8px;
+  padding: 12px 24px;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.about-btn.primary {
+  background: #cc0000;
+  color: #fff;
+}
+
+.about-btn.primary:hover {
+  background: #a80000;
+  transform: translateY(-3px);
+}
+
+.about-btn.secondary {
+  background: transparent;
+  border: 1px solid #cc0000;
+  color: #fff;
+}
+
+.about-btn.secondary:hover {
+  background: #cc0000;
+  transform: translateY(-3px);
+}
+
+@media (max-width: 900px) {
+  .about-container {
+    flex-direction: column;
+    text-align: center;
+  }
+  .about-image img {
+    max-width: 420px;
+  }
+}
+
+</style>
+
+
+  <section class="section pricing-section" id="fiyat">
+  <h2>Fiyatlandırma Planları</h2>
+  <p class="pricing-subtitle">
+    İhtiyacınıza göre planınızı özelleştirin. Tüm planlarda üretim, muhasebe, güvenlik ve yedekleme modülleri dahildir.
+  </p>
+
+  <div class="pricing-container">
+
+    <div class="plan-card">
+      <h3>Başlangıç</h3>
+      <p class="price">$99<span>/ay</span></p>
+      <ul>
+        <li>10 kullanıcıya kadar</li>
+        <li>Temel Yönetim Paneli</li>
+        <li>Veri Yedekleme</li>
+        <li>Standart Destek</li>
+      </ul>
+      <button onclick="window.location.href='register.html'">Plan Seç</button>
+    </div>
+
+    <div class="plan-card featured">
+      <div class="tag">Önerilen</div>
+      <h3>Profesyonel</h3>
+      <p class="price">$249<span>/ay</span></p>
+      <ul>
+        <li>50 kullanıcıya kadar</li>
+        <li>Tüm Modüller Dahil</li>
+        <li>Canlı Raporlama</li>
+        <li>7/24 Öncelikli Destek</li>
+      </ul>
+      <button onclick="window.location.href='register.html'">Plan Seç</button>
+    </div>
+
+    <div class="plan-card">
+      <h3>Kurumsal</h3>
+      <p class="price">Özel Teklif</p>
+      <ul>
+        <li>Sınırsız Kullanıcı</li>
+        <li>Ar-Ge & Entegrasyon Dahil</li>
+        <li>Özel Sunucu Desteği</li>
+        <li>Kurumsal Eğitim Paketi</li>
+      </ul>
+      <button onclick="window.location.href='register.html'">Teklif Al</button>
+    </div>
+
+  </div>
+</section>
+
+
+<style>
+.pricing-section {
+  background: linear-gradient(180deg, #0d0d0d, #1a0000);
+  color: #fff;
+  text-align: center;
+  padding: 100px 8%;
+}
+
+.pricing-subtitle {
+  color: #bbb;
+  font-size: 16px;
+  margin-bottom: 60px;
+}
+
+.pricing-container {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 40px;
+}
+
+.plan-card {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 18px;
+  padding: 40px 30px;
+  width: 300px;
+  position: relative;
+  transition: all 0.4s ease;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.4);
+  backdrop-filter: blur(12px);
+}
+
+.plan-card:hover {
+  transform: translateY(-8px);
+  border-color: #cc0000;
+  box-shadow: 0 0 30px rgba(204, 0, 0, 0.3);
+}
+
+.plan-card.featured {
+  border: 2px solid #cc0000;
+  background: linear-gradient(145deg, rgba(204, 0, 0, 0.15), rgba(0, 0, 0, 0.8));
+  transform: scale(1.05);
+}
+
+.plan-card .tag {
+  position: absolute;
+  top: -10px;
+  right: -10px;
+  background: #cc0000;
+  color: #fff;
+  font-size: 13px;
+  font-weight: 700;
+  padding: 6px 12px;
+  border-radius: 8px;
+}
+
+.plan-card h3 {
+  color: #fff;
+  margin-bottom: 12px;
+  font-size: 22px;
+}
+
+.plan-card .price {
+  color: #cc0000;
+  font-size: 32px;
+  font-weight: 700;
+  margin-bottom: 25px;
+}
+
+.plan-card .price span {
+  font-size: 16px;
+  color: #888;
+}
+
+.plan-card ul {
+  list-style: none;
+  padding: 0;
+  margin-bottom: 30px;
+  color: #bbb;
+}
+
+.plan-card ul li {
+  margin: 10px 0;
+  font-size: 14px;
+}
+
+.plan-card button {
+  background: #cc0000;
+  color: #fff;
+  border: none;
+  padding: 12px 22px;
+  border-radius: 10px;
+  font-weight: 600;
+  font-size: 15px;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.plan-card button:hover {
+  background: #a80000;
+  transform: translateY(-3px);
+}
+
+@media (max-width: 900px) {
+  .pricing-container {
+    flex-direction: column;
+    align-items: center;
+  }
+  .plan-card {
+    width: 90%;
+  }
+}
+
+</style>
+
+<script>
+document.getElementById('calcBtn').addEventListener('click', ()=>{
+  const type = document.getElementById('planType').value;
+  const users = Math.max(10, parseInt(document.getElementById('userCount').value || 10));
+  const mod_satis = document.getElementById('mod_satis').checked;
+  const mod_lojistik = document.getElementById('mod_lojistik').checked;
+  const mod_arge = document.getElementById('mod_arge').checked;
+
+  // Baz fiyatlar
+  let basePrice = 0;
+  if(type==='monthly') basePrice = 100;
+  else if(type==='yearly') basePrice = 1000;
+  else basePrice = 20000;
+
+  // Ek kullanıcı ücreti (her kullanıcı için +$5)
+  let userCost = (users - 10) * 5;
+
+  // Ek modüller
+  let moduleCount = 0;
+  if(mod_satis) moduleCount += 1;
+  if(mod_lojistik) moduleCount += 1;
+
+  let moduleCost = moduleCount * 50; // her modül $50 ek
+  let total = basePrice + userCost + moduleCost;
+
+  if(mod_arge) total *= 1.25; // Ar-Ge %25 ek maliyet
+
+  // Görüntüle
+  document.getElementById('priceBox').textContent = `$${total.toLocaleString('en-US')}`;
+  document.getElementById('priceInfo').textContent = 
+    `Plan: ${type==='monthly'?'Aylık':'Yıllık' || 'Süresiz'} • ${users} kullanıcı • ${moduleCount} ek modül ${mod_arge?'+ Ar-Ge':''}`;
+});
+</script>
+
+
+
+ <section class="cta" id="cta">
+  <div class="cta-overlay"></div>
+  <div class="cta-glow"></div>
+
+  <div class="cta-inner">
+    <h2>Endüstriyel Dijitalleşmenin Yeni Çağı</h2>
+    <p>
+      Üretimden muhasebeye, yönetimden lojistiğe kadar tüm süreçleri  
+      <b>KönigBoard</b> zekâsıyla tek merkezden yönetin.  
+      Verimliliğinizi artırın, kontrolü elinizde tutun.
+    </p>
+
+    <div class="cta-buttons">
+      <button class="cta-main" onclick="window.location.href='register.html'">🚀 Hemen Başla</button>
+      <button class="cta-demo" onclick="window.location.href='login.html'">🎬 Demo Giriş</button>
+    </div>
+
+    <div class="cta-footer">
+      <span>König Technologies © 2026 • Endüstriyel Dönüşümde Liderlik</span>
+    </div>
+  </div>
+</section>
+
+
+<style>
+.cta {
+  position: relative;
+  overflow: hidden;
+  text-align: center;
+  padding: 140px 8%;
+  background: radial-gradient(circle at top left, #1a0000 0%, #000 70%);
+  color: #fff;
+  border-top: 1px solid rgba(255,255,255,0.05);
+  border-bottom: 1px solid rgba(255,255,255,0.05);
+}
+
+/* Arka plan parlaması */
+.cta-overlay {
+  position: absolute;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  background: radial-gradient(circle at 70% 40%, rgba(204,0,0,0.25), transparent 70%);
+  z-index: 1;
+  animation: pulseGlow 6s infinite ease-in-out;
+  filter: blur(60px);
+}
+
+/* Hafif ışıltı animasyonu */
+.cta-glow {
+  position: absolute;
+  top: -100px; left: -100px;
+  width: 500px; height: 500px;
+  background: rgba(204,0,0,0.15);
+  border-radius: 50%;
+  z-index: 0;
+  filter: blur(100px);
+  animation: moveGlow 10s infinite alternate ease-in-out;
+}
+
+@keyframes pulseGlow {
+  0%, 100% { opacity: 0.4; transform: scale(1); }
+  50% { opacity: 0.8; transform: scale(1.1); }
+}
+
+@keyframes moveGlow {
+  0% { transform: translate(0, 0); }
+  100% { transform: translate(100px, 60px); }
+}
+
+/* İçerik */
+.cta-inner {
+  position: relative;
+  z-index: 5;
+  max-width: 850px;
+  margin: auto;
+}
+
+.cta-inner h2 {
+  font-size: 46px;
+  font-weight: 700;
+  color: #fff;
+  margin-bottom: 25px;
+  text-shadow: 0 0 25px rgba(204,0,0,0.5);
+}
+
+.cta-inner p {
+  font-size: 18px;
+  color: #ccc;
+  line-height: 1.6;
+  margin-bottom: 50px;
+}
+
+/* Butonlar */
+.cta-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+
+.cta-main, .cta-demo {
+  border: none;
+  border-radius: 10px;
+  padding: 14px 30px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.cta-main {
+  background: #cc0000;
+  color: #fff;
+  box-shadow: 0 0 25px rgba(204,0,0,0.4);
+}
+
+.cta-main:hover {
+  background: #a80000;
+  transform: translateY(-3px);
+}
+
+.cta-demo {
+  background: transparent;
+  border: 1px solid #cc0000;
+  color: #fff;
+}
+
+.cta-demo:hover {
+  background: #cc0000;
+  transform: translateY(-3px);
+}
+
+/* Alt yazı */
+.cta-footer {
+  margin-top: 60px;
+  font-size: 13px;
+  color: #888;
+  letter-spacing: 0.4px;
+}
+
+@media (max-width: 800px) {
+  .cta-inner h2 {
+    font-size: 32px;
+  }
+  .cta-inner p {
+    font-size: 16px;
+  }
+  .cta-buttons {
+    flex-direction: column;
+  }
+  .cta-main, .cta-demo {
+    width: 100%;
+  }
+}
+
+</style>
+
+<section class="section references" id="referanslar">
+  <h2>Bizimle Çalışan Markalar</h2>
+  <p class="ref-subtitle">KönigBoard, üretim ve inovasyonu dijitalleştiren güçlü bir ekosistemin merkezinde yer alır.</p>
+
+  <div class="ref-logos">
+
+    <a href="https://derapvc.com.tr" target="_blank" class="ref-card">
+      <img src="https://derapvc.com.tr/tema/dera/img/logo.png" alt="Dera PVC">
+    </a>
+
+    <a href="https://www.derapvc.com.tr" target="_blank" class="ref-card">
+      <img src="https://www.derapvc.com.tr/tema/dera/img/konig.png" alt="König">
+    </a>
+
+    <a href="#" target="_blank" class="ref-card">
+      <img src="https://i.hizliresim.com/83ujy1p.png" alt="DeraBee">
+    </a>
+
+    <a href="https://makrowin.biz" target="_blank" class="ref-card">
+      <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSL760ojpiVxzk8f39mQwvkQNBQLAW5p-mlrg&s" alt="Makrowin">
+    </a>
+
+    <a href="#" target="_blank" class="ref-card">
+      <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTZ9LcWiyFE7tPwEsagHSYwyj_8wqGJfgmHGg&s" alt="Door-A">
+    </a>
+
+  </div>
+
+  <div class="ref-quote">
+    <p>“KönigBoard, fabrikalar arası veri akışını tek sistemde topladı. Artık tüm markalarımız senkron çalışıyor.”</p>
+    <span>— König Technologies Yönetim Ekibi</span>
+  </div>
+</section>
+
+<style>
+.references {
+  background:#0d0d0d;
+  color:#fff;
+  text-align:center;
+  padding:100px 8%;
+  border-top:1px solid rgba(255,255,255,0.05);
+  border-bottom:1px solid rgba(255,255,255,0.05);
+}
+
+.references h2 {
+  color:#cc0000;
+  font-size:34px;
+  margin-bottom:12px;
+}
+
+.ref-subtitle {
+  color:#bbb;
+  font-size:16px;
+  margin-bottom:50px;
+}
+
+.ref-logos {
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(160px,1fr));
+  gap:40px;
+  align-items:center;
+  justify-items:center;
+  margin-bottom:60px;
+}
+
+.ref-card {
+  background:#fff;
+  padding:20px 25px;
+  border-radius:14px;
+  transition:all 0.3s ease;
+  border:1px solid rgba(255,255,255,0.08);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  height:100px;
+  box-shadow:0 0 12px rgba(0,0,0,0.2);
+}
+.ref-card:hover {
+  transform:translateY(-6px);
+  box-shadow:0 0 18px rgba(204,0,0,0.4);
+  border-color:#cc0000;
+}
+
+.ref-card img {
+  width:auto;
+  max-width:140px;
+  max-height:70px;
+  object-fit:contain;
+  opacity:0.9;
+  transition:0.3s;
+}
+.ref-card img:hover {
+  opacity:1;
+  transform:scale(1.04);
+}
+
+.ref-quote {
+  margin-top:40px;
+  font-style:italic;
+  color:#ccc;
+}
+.ref-quote p {
+  font-size:18px;
+  margin-bottom:8px;
+}
+.ref-quote span {
+  color:#888;
+  font-size:14px;
+}
+
+@media(max-width:700px){
+  .references h2{font-size:28px;}
+  .ref-logos{gap:25px;}
+}
+</style>
+
+
+
+  <footer id="iletisim">
+  <div class="footer-container">
+
+    <!-- LOGO ve AÇIKLAMA -->
+    <div class="footer-logo">
+      <img src="https://i.hizliresim.com/joy286z.png" alt="KönigBoard Logo">
+      <p>
+        <b>KönigBoard</b>, üretimden muhasebeye kadar tüm süreçleri tek platformda birleştirir.  
+        Dijital dönüşümün gücünü fabrikanıza taşıyın.
+      </p>
+
+      <!-- BÜLTEN -->
+      <form class="newsletter" id="newsletterForm">
+        <label for="newsletterEmail">📩 Gelişmelerden Haberdar Olun</label>
+        <div class="newsletter-input">
+          <input type="email" id="newsletterEmail" placeholder="E-posta adresiniz" required>
+          <button type="submit">Abone Ol</button>
+        </div>
+        <small>Yeni sürümler, güncellemeler ve özel teklifler e-posta ile paylaşılacaktır.</small>
+      </form>
+    </div>
+
+    <!-- LİNK GRUPLARI -->
+    <div class="footer-links">
+      <h4>Kurumsal</h4>
+      <ul>
+        <li><a href="#hakkinda">Hakkımızda</a></li>
+        <li><a href="#ozellikler">Özellikler</a></li>
+        <li><a href="#fiyat">Fiyatlandırma</a></li>
+        <li><a href="#referanslar">Referanslar</a></li>
+        <li><a href="#">Basın & Medya</a></li>
+      </ul>
+    </div>
+
+    <div class="footer-links">
+      <h4>Kaynaklar</h4>
+      <ul>
+        <li><a href="#">Destek Merkezi</a></li>
+        <li><a href="#">API Dokümantasyonu</a></li>
+        <li><a href="#">Kullanıcı Rehberi</a></li>
+        <li><a href="#">Sistem Gereksinimleri</a></li>
+        <li><a href="#">Sürüm Notları</a></li>
+      </ul>
+    </div>
+
+    <div class="footer-links">
+      <h4>İletişim</h4>
+      <ul>
+        <li><a href="mailto:info@konigtechnologies.com">info@konigtechnologies.com</a></li>
+        <li><a href="tel:+905516801463">+90 551 680 14 63</a></li>
+        <li><a href="#">Kayseri / Türkiye</a></li>
+        <li><a href="#">LinkedIn</a></li>
+        <li><a href="#">X (Twitter)</a></li>
+      </ul>
+    </div>
+
+  </div>
+
+  <!-- ALT KISIM -->
+  <div class="footer-bottom">
+    <div class="footer-divider"></div>
+    <p>
+      © 2026 König Technologies • Tüm Hakları Saklıdır • 
+      <a href="#">Gizlilik Politikası</a> • 
+      <a href="#">Kullanım Şartları</a>
+    </p>
+  </div>
+</footer>
+
+<style>
+footer {
+  background:#070707;
+  color:#ccc;
+  padding:80px 8% 30px;
+  font-family:'Poppins',sans-serif;
+  border-top:2px solid #cc0000;
+  position:relative;
+  overflow:hidden;
+}
+
+/* Hafif kırmızı parıltı efekti */
+footer::before {
+  content:'';
+  position:absolute;
+  top:-100px; left:-100px;
+  width:400px; height:400px;
+  background:radial-gradient(circle,rgba(204,0,0,0.2),transparent 70%);
+  filter:blur(80px);
+  z-index:0;
+}
+
+.footer-container {
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(240px,1fr));
+  gap:50px;
+  margin-bottom:60px;
+  position:relative;
+  z-index:1;
+}
+
+.footer-logo img {
+  width:160px;
+  margin-bottom:15px;
+  filter:brightness(1.3);
+}
+
+.footer-logo p {
+  font-size:14px;
+  color:#aaa;
+  line-height:1.6;
+  margin-bottom:20px;
+}
+
+/* === NEWSLETTER === */
+.newsletter label {
+  display:block;
+  color:#fff;
+  font-weight:600;
+  margin-bottom:6px;
+  font-size:15px;
+}
+.newsletter-input {
+  display:flex;
+  gap:8px;
+  margin-bottom:6px;
+}
+.newsletter-input input {
+  flex:1;
+  padding:10px 12px;
+  border:none;
+  border-radius:8px;
+  background:#111;
+  color:#fff;
+  outline:none;
+  font-size:14px;
+}
+.newsletter-input input::placeholder { color:#777; }
+.newsletter-input button {
+  background:#cc0000;
+  border:none;
+  color:#fff;
+  padding:10px 18px;
+  border-radius:8px;
+  font-weight:600;
+  cursor:pointer;
+  transition:0.3s;
+}
+.newsletter-input button:hover { background:#a80000; }
+.newsletter small { font-size:12px; color:#777; display:block; }
+
+/* === LINKS === */
+.footer-links h4 {
+  color:#fff;
+  font-size:16px;
+  margin-bottom:12px;
+  border-left:3px solid #cc0000;
+  padding-left:8px;
+}
+.footer-links ul {
+  list-style:none;
+  padding:0;
+}
+.footer-links ul li {
+  margin:6px 0;
+}
+.footer-links ul li a {
+  color:#bbb;
+  text-decoration:none;
+  font-size:14px;
+  transition:0.3s;
+}
+.footer-links ul li a:hover {
+  color:#fff;
+  text-shadow:0 0 8px rgba(204,0,0,0.5);
+}
+
+/* === ALT KISIM === */
+.footer-bottom {
+  text-align:center;
+  border-top:1px solid rgba(255,255,255,0.08);
+  padding-top:20px;
+}
+.footer-divider {
+  height:2px;
+  width:60px;
+  background:#cc0000;
+  margin:0 auto 12px;
+}
+.footer-bottom p {
+  color:#888;
+  font-size:13px;
+}
+.footer-bottom a {
+  color:#cc0000;
+  text-decoration:none;
+  margin:0 5px;
+  transition:0.3s;
+}
+.footer-bottom a:hover { text-decoration:underline; }
+
+/* === RESPONSIVE === */
+@media(max-width:850px){
+  .footer-container {
+    grid-template-columns:1fr 1fr;
+    gap:30px;
+  }
+}
+@media(max-width:600px){
+  .footer-container {
+    grid-template-columns:1fr;
+    text-align:center;
+  }
+  .footer-links h4 {
+    border:none;
+    padding-left:0;
+  }
+  .newsletter-input {
+    flex-direction:column;
+  }
+  .newsletter-input button {
+    width:100%;
+  }
+}
+</style>
+
+<script>
+// Logo animasyonu ve footer newsletter bildirimi
+document.addEventListener("DOMContentLoaded", ()=>{
+  const form = document.getElementById("newsletterForm");
+  form.addEventListener("submit",(e)=>{
+    e.preventDefault();
+    const email = document.getElementById("newsletterEmail").value.trim();
+    if(email){
+      alert(`✅ ${email} e-posta adresiyle abone olundu!`);
+      form.reset();
+    }
+  });
+});
+</script>
+
+
+</body>
+</html>

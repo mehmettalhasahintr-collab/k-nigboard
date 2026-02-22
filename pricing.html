@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1.0">
+  <title>KönigBoard — Abonelik Planı</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    body {
+      font-family:'Poppins',sans-serif;
+      background:linear-gradient(180deg,#0d0d0d,#1a1a1a);
+      color:#fff;margin:0;padding:0;
+    }
+    header {
+      padding:20px 8%;
+      display:flex;justify-content:space-between;align-items:center;
+      background:rgba(0,0,0,0.85);backdrop-filter:blur(10px);
+    }
+    header img {height:42px;}
+    .plans {
+      display:flex;flex-wrap:wrap;justify-content:center;gap:30px;
+      margin:80px 8%;
+    }
+    .plan {
+      background:#141414;border:1px solid #222;border-radius:16px;
+      width:300px;padding:40px 30px;text-align:center;
+      box-shadow:0 0 15px rgba(0,0,0,0.3);
+      transition:transform 0.3s,border-color 0.3s;
+    }
+    .plan:hover {transform:translateY(-6px);border-color:#cc0000;}
+    .plan h3 {color:#fff;font-size:22px;margin-bottom:8px;}
+    .price {color:#cc0000;font-size:28px;font-weight:700;margin-bottom:20px;}
+    ul {list-style:none;padding:0;margin:0 0 25px;text-align:left;}
+    ul li {margin:8px 0;color:#bbb;font-size:14px;}
+    button {
+      background:#cc0000;border:none;color:#fff;padding:12px 22px;
+      border-radius:8px;font-weight:600;cursor:pointer;font-size:15px;
+      transition:0.3s;
+    }
+    button:hover {background:#a80000;}
+    footer {text-align:center;color:#999;padding:30px 0;font-size:14px;}
+  </style>
+</head>
+<body>
+
+  <header>
+    <img src="https://i.hizliresim.com/joy286z.png" alt="KönigBoard Logo">
+    <h2>Abonelik Seçimi</h2>
+  </header>
+
+  <!-- ===== Dinamik Fiyatlandırma Bölümü (YERLEŞTİR) ===== -->
+<section class="section" id="fiyat">
+  <h2>Fiyatlandırma Planları</h2>
+
+  <div style="display:flex;flex-wrap:wrap;gap:24px;justify-content:center;margin-top:24px;">
+    <!-- Plan kartı (template benzeri) -->
+    <div class="plan" style="width:340px;">
+      <h3>Starter</h3>
+      <p class="price" id="starterPrice">10 $ / Ay</p>
+
+      <ul>
+        <li>• Muhasebe (standart)</li>
+        <li>• Günlük Yedekleme</li>
+        <li>• 10 Kullanıcı (başlangıç)</li>
+      </ul>
+
+      <div style="text-align:left;margin-bottom:12px;">
+        <label><input type="radio" name="starterPeriod" value="monthly" checked> Aylık</label>
+        <label style="margin-left:8px;"><input type="radio" name="starterPeriod" value="yearly"> Yıllık (10×12 × %0.85)</label>
+        <label style="margin-left:8px;"><input type="radio" name="starterPeriod" value="lifetime"> Ömür Boyu</label>
+      </div>
+
+      <div style="text-align:left;margin-bottom:12px;">
+        <label><input id="starterArge" type="checkbox"> Ar-Ge Modülü (Ek Ücret)</label>
+      </div>
+
+      <div style="margin-bottom:12px;font-weight:700">Toplam: <span id="starterTotal">10 $</span></div>
+      <button onclick="choosePlan('Starter')">Seç</button>
+    </div>
+
+    <div class="plan" style="width:340px;">
+      <h3>Professional</h3>
+      <p class="price" id="proPrice">250 $ / Ay</p>
+
+      <ul>
+        <li>• Muhasebe + Üretim</li>
+        <li>• Haftalık Bulut Yedekleme + Öncelik Desteği</li>
+        <li>• Sınırsız Kullanıcı</li>
+      </ul>
+
+      <div style="text-align:left;margin-bottom:12px;">
+        <label><input type="radio" name="proPeriod" value="monthly" checked> Aylık</label>
+        <label style="margin-left:8px;"><input type="radio" name="proPeriod" value="yearly"> Yıllık (12× × %0.80)</label>
+        <label style="margin-left:8px;"><input type="radio" name="proPeriod" value="lifetime"> Ömür Boyu</label>
+      </div>
+
+      <div style="text-align:left;margin-bottom:12px;">
+        <label><input id="proArge" type="checkbox"> Ar-Ge Modülü (Ek Ücret)</label>
+      </div>
+
+      <div style="margin-bottom:12px;font-weight:700">Toplam: <span id="proTotal">250 $</span></div>
+      <button onclick="choosePlan('Professional')">Seç</button>
+    </div>
+
+    <div class="plan" style="width:340px;">
+      <h3>Enterprise</h3>
+      <p class="price" id="entPrice">20.000 $ / Ömür Boyu</p>
+
+      <ul>
+        <li>• Tüm Modüller</li>
+        <li>• Özel Sunucu & SLA</li>
+        <li>• Öncelikli Mühendis Desteği</li>
+      </ul>
+
+      <div style="text-align:left;margin-bottom:12px;">
+        <label><input type="radio" name="entPeriod" value="lifetime" checked> Ömür Boyu</label>
+        <label style="margin-left:8px;"><input type="radio" name="entPeriod" value="yearly"> Yıllık</label>
+        <label style="margin-left:8px;"><input type="radio" name="entPeriod" value="monthly"> Aylık</label>
+      </div>
+
+      <div style="text-align:left;margin-bottom:12px;">
+        <label><input id="entArge" type="checkbox" checked disabled> Ar-Ge Modülü (Dahil)</label>
+      </div>
+
+      <div style="margin-bottom:12px;font-weight:700">Toplam: <span id="entTotal">20.000 $</span></div>
+      <button onclick="choosePlan('Enterprise')">İletişime Geç</button>
+    </div>
+  </div>
+
+  <div style="max-width:980px;margin:28px auto;text-align:center;color:#bbb;">
+    <small>
+      Not: Fabrika sayısı fiyatı etkilemez — fiyatlandırma kullanıcı başına veya plana göre sabittir.  
+      Muhasebe ve yedekleme tüm planlarda standarttır. Ar-Ge modülü isteğe bağlıdır (Starter/Pro için ek ücret).
+    </small>
+  </div>
+</section>
+
+<!-- ===== JS: Dinamik Hesaplama & Seçim Kaydetme ===== -->
+<script>
+  (function(){
+    // Temel sabitler (isteğe göre güncelle)
+    const base = {
+      starter: {monthly:10, yearly:10*12*0.85, lifetime:10*12*5}, // lifetime burada örnek 5 yıllık toplamı
+      pro: {monthly:250, yearly:250*12*0.80, lifetime:250*12*6},
+      enterprise: {monthly:2500, yearly:20000, lifetime:20000}
+    };
+    const argeAddon = {starter:40, pro:600}; // Ar-Ge ek ücretleri (aylık bazlı)
+    const argeYearDiscount = 0.9; // yıllık ödeme seçilirse ARGE indirimi
+
+    // yardımcı: DOM refler
+    function $(id){ return document.getElementById(id); }
+    const starterTotal = $('starterTotal'), proTotal = $('proTotal'), entTotal = $('entTotal');
+
+    // hesaplama fonksiyonu
+    function calc(plan){
+      if (plan==='starter'){
+        const period = document.querySelector('input[name="starterPeriod"]:checked').value;
+        let val = base.starter[period];
+        // arge checkbox
+        if ($('starterArge').checked){
+          if (period==='yearly') val += argeAddon.starter*12*argeYearDiscount;
+          else if (period==='lifetime') val += argeAddon.starter*12*5;
+          else val += argeAddon.starter;
+        }
+        starterTotal.innerText = formatPrice(val, period);
+      }
+      if (plan==='pro'){
+        const period = document.querySelector('input[name="proPeriod"]:checked').value;
+        let val = base.pro[period];
+        if ($('proArge').checked){
+          if (period==='yearly') val += argeAddon.pro*12*argeYearDiscount;
+          else if (period==='lifetime') val += argeAddon.pro*12*6;
+          else val += argeAddon.pro;
+        }
+        proTotal.innerText = formatPrice(val, period);
+      }
+      if (plan==='ent'){
+        const period = document.querySelector('input[name="entPeriod"]:checked').value;
+        let val;
+        if (period==='lifetime') val = base.enterprise.lifetime;
+        else if (period==='yearly') val = base.enterprise.yearly;
+        else val = base.enterprise.monthly;
+        entTotal.innerText = formatPrice(val, period);
+      }
+    }
+
+    function formatPrice(value, period){
+      // gösterimde net format
+      const v = Number(value);
+      if (period==='monthly') return v.toLocaleString() + ' $ / Ay';
+      if (period==='yearly') return v.toLocaleString() + ' $ / Yıl';
+      return v.toLocaleString() + ' $';
+    }
+
+    // event listener ekle (radios & checkboxes)
+    document.querySelectorAll('input[name="starterPeriod"]').forEach(r=> r.addEventListener('change', ()=>calc('starter')));
+    document.querySelectorAll('input[name="proPeriod"]').forEach(r=> r.addEventListener('change', ()=>calc('pro')));
+    document.querySelectorAll('input[name="entPeriod"]').forEach(r=> r.addEventListener('change', ()=>calc('ent')));
+    $('starterArge').addEventListener('change', ()=>calc('starter'));
+    $('proArge').addEventListener('change', ()=>calc('pro'));
+
+    // ilk hesaplama (başlangıç)
+    calc('starter'); calc('pro'); calc('ent');
+
+    // seçim yapılınca localStorage'a kaydet
+    window.choosePlan = function(planName){
+      let payload = { plan: planName };
+      if (planName === 'Starter'){
+        const period = document.querySelector('input[name="starterPeriod"]:checked').value;
+        payload.period = period;
+        payload.arge = $('starterArge').checked;
+        payload.price = starterTotal.innerText;
+      } else if (planName === 'Professional'){
+        const period = document.querySelector('input[name="proPeriod"]:checked').value;
+        payload.period = period;
+        payload.arge = $('proArge').checked;
+        payload.price = proTotal.innerText;
+      } else {
+        const period = document.querySelector('input[name="entPeriod"]:checked').value;
+        payload.period = period;
+        payload.arge = true;
+        payload.price = entTotal.innerText;
+      }
+      localStorage.setItem('selectedPlan', JSON.stringify(payload));
+      // yönlendirme veya ödeme adımı
+      if (planName === 'Enterprise') {
+        alert('Kurumsal teklif için satış ekibimiz sizinle iletişime geçecek. Bilgilerinizi gönderiyoruz.');
+        window.location.href = '/contact-sales.html';
+      } else {
+        alert(`${payload.plan} seçildi — ${payload.price}\nÖdeme sayfasına yönlendiriliyorsunuz...`);
+        window.location.href = '/payment.html';
+      }
+    };
+  })();
+</script>
+<!-- ===== /Dinamik Fiyatlandırma Bölümü ===== -->
+
+
+  <footer>
+    © 2026 König Technologies — Tüm Hakları Saklıdır
+  </footer>
+
+  <script>
+    function selectPlan(plan, price, period){
+      localStorage.setItem("selectedPlan", JSON.stringify({plan, price, period}));
+      alert(`✅ ${plan} planı seçildi.\nFiyat: ${price} $, Dönem: ${period}.\n\nŞimdi ödeme ekranına yönlendiriliyorsunuz...`);
+      window.location.href = "payment.html"; // ödeme sayfasına yönlendirme
+    }
+  </script>
+
+</body>
+</html>

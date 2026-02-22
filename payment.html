@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1.0">
+  <title>KönigBoard – Ödeme</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --red:#cc0000;
+      --dark:#0b0b0b;
+      --gray:#151515;
+      --glass:rgba(255,255,255,0.05);
+    }
+    *{box-sizing:border-box;}
+    body{
+      margin:0;
+      font-family:'Poppins',sans-serif;
+      background:linear-gradient(145deg,#0a0a0a,#1a1a1a);
+      color:#fff;
+      overflow-x:hidden;
+    }
+    header{
+      background:rgba(0,0,0,0.8);
+      backdrop-filter:blur(12px);
+      padding:20px 8%;
+      display:flex;justify-content:space-between;align-items:center;
+      border-bottom:1px solid rgba(255,255,255,0.1);
+    }
+    header img{height:45px;}
+    header h1{font-size:18px;font-weight:600;color:#fff;letter-spacing:1px;}
+    .container{
+      display:flex;
+      flex-wrap:wrap;
+      justify-content:center;
+      gap:40px;
+      padding:80px 8%;
+    }
+    .card{
+      flex:1;
+      min-width:320px;
+      max-width:480px;
+      background:var(--glass);
+      border:1px solid rgba(255,255,255,0.1);
+      border-radius:20px;
+      padding:40px;
+      box-shadow:0 10px 30px rgba(0,0,0,0.4);
+      backdrop-filter:blur(16px);
+    }
+    h2{color:var(--red);margin-top:0;text-align:center;}
+    label{display:block;font-weight:600;margin:10px 0 6px;color:#ccc;}
+    input,select{
+      width:100%;padding:12px;border:none;border-radius:10px;
+      background:rgba(255,255,255,0.08);color:#fff;font-size:15px;
+      margin-bottom:14px;
+    }
+    input:focus{outline:2px solid var(--red);}
+    button{
+      width:100%;
+      padding:14px;
+      background:var(--red);
+      border:none;
+      border-radius:10px;
+      color:#fff;
+      font-size:16px;
+      font-weight:600;
+      cursor:pointer;
+      transition:0.3s;
+    }
+    button:hover{background:#a80000;}
+    .summary{
+      background:linear-gradient(145deg,#181818,#202020);
+      border-radius:18px;
+      padding:28px;
+      border:1px solid rgba(255,255,255,0.08);
+    }
+    .summary h3{
+      color:var(--red);
+      margin-top:0;
+      margin-bottom:14px;
+      font-size:18px;
+      text-align:center;
+    }
+    .summary p{margin:8px 0;font-size:15px;color:#ccc;}
+    .secure{
+      display:flex;align-items:center;justify-content:center;
+      gap:8px;color:#999;font-size:13px;margin-top:20px;
+    }
+    .secure span{color:limegreen;}
+    footer{text-align:center;padding:40px;color:#666;font-size:13px;border-top:1px solid rgba(255,255,255,0.1);}
+    .success-screen{
+      position:fixed;top:0;left:0;width:100%;height:100%;
+      background:rgba(0,0,0,0.85);display:flex;flex-direction:column;
+      align-items:center;justify-content:center;text-align:center;
+      color:#fff;backdrop-filter:blur(8px);
+      opacity:0;pointer-events:none;transition:0.6s ease;
+    }
+    .success-screen.active{opacity:1;pointer-events:auto;}
+    .checkmark{
+      width:90px;height:90px;border-radius:50%;background:limegreen;
+      display:flex;align-items:center;justify-content:center;
+      font-size:48px;font-weight:700;color:#fff;margin-bottom:20px;
+      animation:pop 0.5s ease forwards;
+    }
+    @keyframes pop {
+      0%{transform:scale(0.2);opacity:0;}
+      100%{transform:scale(1);opacity:1;}
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <div style="display:flex;align-items:center;gap:14px;">
+    <img src="https://i.hizliresim.com/joy286z.png" alt="KönigBoard Logo">
+    <h1>KönigBoard Ödeme Merkezi</h1>
+  </div>
+</header>
+
+<section class="container">
+  <div class="card">
+    <h2>Kart Bilgileri</h2>
+    <form id="paymentForm">
+      <label>Kart Üzerindeki İsim</label>
+      <input type="text" id="cardName" required>
+
+      <label>Kart Numarası</label>
+      <input type="text" id="cardNumber" maxlength="19" placeholder="XXXX XXXX XXXX XXXX" required>
+
+      <div style="display:flex;gap:10px;">
+        <div style="flex:1;">
+          <label>Son Kullanma (AA/YY)</label>
+          <input type="text" id="expDate" maxlength="5" placeholder="07/29" required>
+        </div>
+        <div style="flex:1;">
+          <label>CVC</label>
+          <input type="text" id="cvc" maxlength="3" required>
+        </div>
+      </div>
+
+      <button type="submit">💳 Ödemeyi Tamamla</button>
+      <div class="secure">
+        <span>🔒</span> SSL ile %100 Güvenli Ödeme
+      </div>
+    </form>
+  </div>
+
+  <div class="card">
+    <div class="summary">
+      <h3>Abonelik Özeti</h3>
+      <p><b>Plan:</b> <span id="planName">–</span></p>
+      <p><b>Dönem:</b> <span id="planPeriod">–</span></p>
+      <p><b>Fiyat:</b> <span id="planPrice">–</span></p>
+      <hr style="border:1px solid rgba(255,255,255,0.1);margin:16px 0;">
+      <p><b>Kullanıcı:</b> <span id="userName">–</span></p>
+      <p><b>E-posta:</b> <span id="userEmail">–</span></p>
+    </div>
+  </div>
+</section>
+
+<footer>© 2026 König Technologies • Güvenli Altyapı ile korunur.</footer>
+
+<!-- Başarılı ödeme ekranı -->
+<div class="success-screen" id="successScreen">
+  <div class="checkmark">✓</div>
+  <h2>Ödeme Başarılı</h2>
+  <p>Aboneliğin aktifleştirildi. Şirket bilgilerini kaydetmeye yönlendiriliyorsun...</p>
+</div>
+
+<script>
+  // Kullanıcı bilgilerini ve planı al
+  const planData = JSON.parse(localStorage.getItem("selectedPlan") || "{}");
+  const userData = JSON.parse(localStorage.getItem("registeredUser") || "{}");
+  document.getElementById("planName").innerText = planData.plan || "Plan seçilmedi";
+  document.getElementById("planPeriod").innerText = planData.period || "-";
+  document.getElementById("planPrice").innerText = planData.price || "-";
+  document.getElementById("userName").innerText = userData.name || "-";
+  document.getElementById("userEmail").innerText = userData.email || "-";
+
+  // Kart numarası formatı
+  document.getElementById("cardNumber").addEventListener("input", (e)=>{
+    e.target.value = e.target.value.replace(/\D/g, "").replace(/(.{4})/g, "$1 ").trim();
+  });
+
+  document.getElementById("paymentForm").onsubmit = (e)=>{
+    e.preventDefault();
+    const name = document.getElementById("cardName").value.trim();
+    const num = document.getElementById("cardNumber").value.trim();
+    const exp = document.getElementById("expDate").value.trim();
+    const cvc = document.getElementById("cvc").value.trim();
+    if(!name || num.length<19 || exp.length!==5 || cvc.length!==3){
+      alert("⚠️ Lütfen tüm bilgileri eksiksiz giriniz.");
+      return;
+    }
+
+    // Ödeme simülasyonu
+    document.body.style.pointerEvents="none";
+    alert("💳 Ödeme işleniyor...");
+    setTimeout(()=>{
+      localStorage.setItem("paymentStatus","success");
+      const success=document.getElementById("successScreen");
+      success.classList.add("active");
+      // ✅ Artık dashboard yerine setup.html'e yönlendireceğiz
+      setTimeout(()=>{
+        alert("✅ Ödeme tamamlandı! Şirket bilgilerinizi ekleyin...");
+        window.location.href="setup.html";
+      }, 2500);
+    }, 2000);
+  };
+</script>
+
+</body>
+</html>

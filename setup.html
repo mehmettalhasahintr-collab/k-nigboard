@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1.0">
+  <title>KönigBoard – Şirket Kurulum Sihirbazı</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --red:#cc0000;
+      --dark:#0d0d0d;
+      --gray:#1a1a1a;
+      --glass:rgba(255,255,255,0.05);
+    }
+    *{box-sizing:border-box;}
+    body {
+      font-family:'Poppins',sans-serif;
+      background:linear-gradient(145deg,#0a0a0a,#1a1a1a);
+      color:#fff;
+      margin:0;
+      overflow-x:hidden;
+    }
+    header {
+      background:rgba(0,0,0,0.85);
+      backdrop-filter:blur(12px);
+      padding:20px 8%;
+      display:flex;align-items:center;gap:14px;
+      border-bottom:1px solid rgba(255,255,255,0.1);
+    }
+    header img {height:45px;}
+    h1 {font-size:20px;font-weight:600;color:#fff;margin:0;}
+    .container {
+      max-width:800px;margin:50px auto;padding:40px;background:var(--glass);
+      border-radius:20px;border:1px solid rgba(255,255,255,0.1);
+      backdrop-filter:blur(16px);
+      box-shadow:0 8px 30px rgba(0,0,0,0.4);
+    }
+    h2 {color:var(--red);text-align:center;}
+    label {display:block;font-weight:600;margin:10px 0 6px;color:#ccc;}
+    input,select {
+      width:100%;padding:10px;border:none;border-radius:8px;
+      background:#1e1e1e;color:#fff;font-size:15px;margin-bottom:12px;
+    }
+    input:focus {outline:2px solid var(--red);}
+    button {
+      background:var(--red);border:none;color:#fff;padding:10px 20px;
+      border-radius:8px;font-weight:600;cursor:pointer;transition:0.3s;
+    }
+    button:hover {background:#a80000;}
+    .nav-buttons {
+      display:flex;justify-content:space-between;margin-top:20px;
+    }
+    .step {display:none;}
+    .step.active {display:block;animation:fade 0.4s ease;}
+    @keyframes fade {from{opacity:0;transform:translateY(10px);}to{opacity:1;transform:none;}}
+    .list-item {
+      background:#1a1a1a;padding:10px;border-radius:8px;margin-top:6px;
+      border:1px solid rgba(255,255,255,0.08);
+    }
+    .list-item small {color:#aaa;}
+    hr{border:1px solid rgba(255,255,255,0.1);margin:25px 0;}
+  </style>
+</head>
+<body>
+
+<header>
+  <img src="https://i.hizliresim.com/joy286z.png" alt="KönigBoard Logo">
+  <h1>Şirket Kurulum Sihirbazı</h1>
+</header>
+
+<div class="container">
+  <!-- Step 1 -->
+  <div class="step active" id="step1">
+    <h2>1️⃣ Şirket Bilgileri</h2>
+    <label>Şirket Adı</label>
+    <input id="companyName" type="text">
+    <label>Vergi Numarası</label>
+    <input id="taxNumber" type="text">
+    <label>Kuruluş Yılı</label>
+    <input id="foundationYear" type="number">
+    <label>Adres</label>
+    <input id="address" type="text">
+    <label>Toplam Çalışan Sayısı</label>
+    <input id="totalEmployees" type="number">
+  </div>
+
+  <!-- Step 2 -->
+  <div class="step" id="step2">
+    <h2>2️⃣ Banka Hesapları</h2>
+    <div id="bankList"></div>
+    <hr>
+    <label>Banka Adı</label><input id="bankName">
+    <label>IBAN</label><input id="iban">
+    <label>Bakiye (₺)</label><input id="balance" type="number">
+    <button onclick="addBank()">+ Banka Ekle</button>
+  </div>
+
+  <!-- Step 3 -->
+  <div class="step" id="step3">
+    <h2>3️⃣ Çalışanlar</h2>
+    <div id="employeeList"></div>
+    <hr>
+    <label>Ad Soyad</label><input id="empName">
+    <label>Departman</label>
+    <select id="empDept">
+      <option>Üretim</option><option>Muhasebe</option><option>Satış</option><option>Lojistik</option><option>Ar-Ge</option>
+    </select>
+    <label>Görev</label><input id="empRole">
+    <label>Maaş (₺)</label><input id="empSalary" type="number">
+    <button onclick="addEmployee()">+ Çalışan Ekle</button>
+  </div>
+
+  <!-- Step 4 -->
+  <div class="step" id="step4">
+    <h2>4️⃣ Malzeme Kaydı</h2>
+    <div id="materialList"></div>
+    <hr>
+    <label>Malzeme Adı</label><input id="matName">
+    <label>Miktar</label><input id="matQty" type="number">
+    <label>Birim</label><input id="matUnit">
+    <label>Birim Fiyat (₺)</label><input id="matPrice" type="number">
+    <button onclick="addMaterial()">+ Malzeme Ekle</button>
+  </div>
+
+  <!-- Step 5 -->
+  <div class="step" id="step5">
+    <h2>5️⃣ Üretim Hatları</h2>
+    <div id="lineList"></div>
+    <hr>
+    <label>Hat Adı</label><input id="lineName">
+    <label>Günlük Kapasite</label><input id="lineCapacity" type="number">
+    <label>Sorumlu Kişi</label><input id="lineManager">
+    <button onclick="addLine()">+ Hat Ekle</button>
+  </div>
+
+  <!-- Step 6 -->
+  <div class="step" id="step6">
+    <h2>6️⃣ Borç / Alacak</h2>
+    <div id="debtList"></div>
+    <hr>
+    <label>Firma Adı</label><input id="debtFirm">
+    <label>Tür</label>
+    <select id="debtType"><option>Borç</option><option>Alacak</option></select>
+    <label>Tutar (₺)</label><input id="debtAmount" type="number">
+    <label>Açıklama</label><input id="debtNote">
+    <button onclick="addDebt()">+ Kayıt Ekle</button>
+  </div>
+
+  <!-- Step 7 -->
+  <div class="step" id="step7">
+    <h2>7️⃣ Özet</h2>
+    <p>Tüm bilgilerin kaydedilmeye hazır. Onayladığında dashboard’a yönlendirileceksin.</p>
+    <button onclick="saveCompany()">✅ Kurulumu Tamamla</button>
+  </div>
+
+  <!-- Navigation -->
+  <div class="nav-buttons">
+    <button id="prevBtn" onclick="changeStep(-1)">← Geri</button>
+    <button id="nextBtn" onclick="changeStep(1)">İleri →</button>
+  </div>
+</div>
+
+<script>
+  let currentStep = 1;
+  const totalSteps = 7;
+  const companyData = {
+    info:{}, banks:[], employees:[], materials:[], lines:[], debts:[]
+  };
+
+  function changeStep(dir){
+    document.getElementById("step"+currentStep).classList.remove("active");
+    currentStep += dir;
+    if(currentStep<1) currentStep=1;
+    if(currentStep>totalSteps) currentStep=totalSteps;
+    document.getElementById("step"+currentStep).classList.add("active");
+  }
+
+  function addBank(){
+    const bank={name:bankName.value,iban:iban.value,balance:balance.value};
+    if(!bank.name||!bank.iban) return alert("Banka bilgileri eksik!");
+    companyData.banks.push(bank);
+    const div=document.createElement("div");
+    div.className="list-item";
+    div.innerHTML=`🏦 ${bank.name} - ${bank.iban} <small>${bank.balance} ₺</small>`;
+    bankList.appendChild(div);
+    bankName.value=iban.value=balance.value="";
+  }
+
+  function addEmployee(){
+    const emp={name:empName.value,dept:empDept.value,role:empRole.value,salary:empSalary.value};
+    if(!emp.name||!emp.dept) return alert("Çalışan bilgileri eksik!");
+    companyData.employees.push(emp);
+    const div=document.createElement("div");
+    div.className="list-item";
+    div.innerHTML=`👤 ${emp.name} - ${emp.dept} <small>${emp.role} | ${emp.salary} ₺</small>`;
+    employeeList.appendChild(div);
+    empName.value=empRole.value=empSalary.value="";
+  }
+
+  function addMaterial(){
+    const mat={name:matName.value,qty:matQty.value,unit:matUnit.value,price:matPrice.value};
+    if(!mat.name||!mat.qty) return alert("Malzeme bilgileri eksik!");
+    companyData.materials.push(mat);
+    const div=document.createElement("div");
+    div.className="list-item";
+    div.innerHTML=`📦 ${mat.name} - ${mat.qty} ${mat.unit} <small>${mat.price} ₺/${mat.unit}</small>`;
+    materialList.appendChild(div);
+    matName.value=matQty.value=matUnit.value=matPrice.value="";
+  }
+
+  function addLine(){
+    const line={name:lineName.value,capacity:lineCapacity.value,manager:lineManager.value};
+    if(!line.name||!line.capacity) return alert("Hat bilgileri eksik!");
+    companyData.lines.push(line);
+    const div=document.createElement("div");
+    div.className="list-item";
+    div.innerHTML=`🏭 ${line.name} - ${line.capacity}/gün <small>${line.manager}</small>`;
+    lineList.appendChild(div);
+    lineName.value=lineCapacity.value=lineManager.value="";
+  }
+
+  function addDebt(){
+    const debt={firm:debtFirm.value,type:debtType.value,amount:debtAmount.value,note:debtNote.value};
+    if(!debt.firm||!debt.amount) return alert("Borç/alacak bilgileri eksik!");
+    companyData.debts.push(debt);
+    const div=document.createElement("div");
+    div.className="list-item";
+    div.innerHTML=`💰 ${debt.type}: ${debt.firm} <small>${debt.amount} ₺ | ${debt.note}</small>`;
+    debtList.appendChild(div);
+    debtFirm.value=debtAmount.value=debtNote.value="";
+  }
+
+  function saveCompany(){
+    companyData.info={
+      name:companyName.value,tax:taxNumber.value,year:foundationYear.value,
+      address:address.value,employees:totalEmployees.value
+    };
+    localStorage.setItem("companyData", JSON.stringify(companyData));
+    alert("✅ Şirket kurulumu tamamlandı!");
+    window.location.href="dashboard.html";
+  }
+</script>
+
+</body>
+</html
