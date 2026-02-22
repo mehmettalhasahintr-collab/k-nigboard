@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width,initial-scale=1.0">
-  <title>KönigBoard — Abonelik Planı</title>
+  <title>   KönigBoard — Abonelik Planı</title>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
   <style>
     body {
@@ -50,13 +50,13 @@
 
   <!-- ===== Dinamik Fiyatlandırma Bölümü (YERLEŞTİR) ===== -->
 <section class="section" id="fiyat">
-  <h2>Fiyatlandırma Planları</h2>
+  <h2>  Fiyatlandırma Planları</h2>
 
   <div style="display:flex;flex-wrap:wrap;gap:24px;justify-content:center;margin-top:24px;">
     <!-- Plan kartı (template benzeri) -->
     <div class="plan" style="width:340px;">
       <h3>Starter</h3>
-      <p class="price" id="starterPrice">10 $ / Ay</p>
+      <p class="price" id="starterPrice">100 $ / Ay</p>
 
       <ul>
         <li>• Muhasebe (standart)</li>
@@ -66,7 +66,7 @@
 
       <div style="text-align:left;margin-bottom:12px;">
         <label><input type="radio" name="starterPeriod" value="monthly" checked> Aylık</label>
-        <label style="margin-left:8px;"><input type="radio" name="starterPeriod" value="yearly"> Yıllık (10×12 × %0.85)</label>
+        <label style="margin-left:8px;"><input type="radio" name="starterPeriod" value="yearly"> Yıllık </label>
         <label style="margin-left:8px;"><input type="radio" name="starterPeriod" value="lifetime"> Ömür Boyu</label>
       </div>
 
@@ -74,7 +74,7 @@
         <label><input id="starterArge" type="checkbox"> Ar-Ge Modülü (Ek Ücret)</label>
       </div>
 
-      <div style="margin-bottom:12px;font-weight:700">Toplam: <span id="starterTotal">10 $</span></div>
+      <div style="margin-bottom:12px;font-weight:700">Toplam: <span id="starterTotal">100 $</span></div>
       <button onclick="choosePlan('Starter')">Seç</button>
     </div>
 
@@ -90,7 +90,7 @@
 
       <div style="text-align:left;margin-bottom:12px;">
         <label><input type="radio" name="proPeriod" value="monthly" checked> Aylık</label>
-        <label style="margin-left:8px;"><input type="radio" name="proPeriod" value="yearly"> Yıllık (12× × %0.80)</label>
+        <label style="margin-left:8px;"><input type="radio" name="proPeriod" value="yearly"> Yıllık</label>
         <label style="margin-left:8px;"><input type="radio" name="proPeriod" value="lifetime"> Ömür Boyu</label>
       </div>
 
@@ -140,8 +140,8 @@
   (function(){
     // Temel sabitler (isteğe göre güncelle)
     const base = {
-      starter: {monthly:10, yearly:10*12*0.85, lifetime:10*12*5}, // lifetime burada örnek 5 yıllık toplamı
-      pro: {monthly:250, yearly:250*12*0.80, lifetime:250*12*6},
+      starter: {monthly:100, yearly:100*12*0.90, lifetime:100*12*5}, // lifetime burada örnek 5 yıllık toplamı
+      pro: {monthly:250, yearly:250*12*0.90, lifetime:250*12*6},
       enterprise: {monthly:2500, yearly:20000, lifetime:20000}
     };
     const argeAddon = {starter:40, pro:600}; // Ar-Ge ek ücretleri (aylık bazlı)
