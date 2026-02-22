@@ -3,156 +3,12 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Kayıt Ol – KönigBoard</title>
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet" />
-  <style>
-    :root {
-      --red: #cc0000;
-      --dark: #0d0d0d;
-      --gray: #1a1a1a;
-    }
-    body {
-      font-family: "Poppins", sans-serif;
-      background: var(--dark);
-      color: #fff;
-      margin: 0;
-      padding: 0;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      min-height: 100vh;
-    }
-    .container {
-      max-width: 600px;
-      background: #141414;
-      padding: 40px;
-      border-radius: 16px;
-      box-shadow: 0 0 25px rgba(0, 0, 0, 0.3);
-    }
-    h1 {
-      text-align: center;
-      color: var(--red);
-      margin-bottom: 20px;
-    }
-    label {
-      display: block;
-      color: #ccc;
-      font-weight: 600;
-      margin: 10px 0 5px;
-    }
-    input,
-    select {
-      width: 100%;
-      padding: 12px;
-      margin-bottom: 15px;
-      border: none;
-      border-radius: 8px;
-      background: #1f1f1f;
-      color: #fff;
-      font-size: 15px;
-    }
-    input:focus {
-      outline: 2px solid var(--red);
-    }
-    button {
-      width: 100%;
-      padding: 14px;
-      background: var(--red);
-      border: none;
-      border-radius: 8px;
-      color: #fff;
-      font-weight: 600;
-      font-size: 16px;
-      cursor: pointer;
-      transition: 0.3s;
-    }
-    button:hover {
-      background: #a80000;
-    }
-    .type-select {
-      display: flex;
-      gap: 10px;
-      justify-content: center;
-      margin-bottom: 20px;
-    }
-    .type-select button {
-      flex: 1;
-      padding: 10px;
-      border: 1px solid #333;
-      background: #1a1a1a;
-      color: #fff;
-      border-radius: 8px;
-      cursor: pointer;
-      font-weight: 600;
-      transition: 0.3s;
-    }
-    .type-select button.active {
-      background: var(--red);
-      border-color: var(--red);
-    }
-    small {
-      display: block;
-      margin-top: 10px;
-      text-align: center;
-      color: #999;
-    }
-    #msg {
-      margin-top: 10px;
-      text-align: center;
-      font-size: 14px;
-    }
-  </style>
-</head>
-<body>
-
-  <div class="container">
-    <h1>Kayıt Ol</h1>
-
-    <div class="type-select">
-      <button id="btnPersonal" class="active">Bireysel</button>
-      <button id="btnCompany">Kurumsal</button>
-    </div>
-
-    <form id="registerForm">
-      <div id="personalFields">
-        <label>Ad Soyad</label>
-        <input type="text" id="fullname" required />
-
-        <label>E-posta</label>
-        <input type="email" id="email" required />
-
-        <label>Şifre</label>
-        <input type="password" id="password" required />
-      </div>
-
-      <div id="companyFields" style="display:none;">
-        <label>Şirket Adı</label>
-        <input type="text" id="companyName" />
-
-        <label>Yetkili Kişi</label>
-        <input type="text" id="authorized" />
-
-        <label>Vergi Numarası</label>
-        <input type="text" id="taxNumber" />
-
-        <label>E-posta</label>
-        <input type="email" id="emailCompany" />
-
-        <label>Şifre</label>
-        <input type="password" id="passwordCompany" />
-      </div>
-
-      <button type="submit">Kaydı Başlat</button>
-      <div id="msg"></div>
-      <small>Zaten hesabın var mı? <a href="login.html" style="color:var(--red);text-decoration:none;">Giriş Yap</a></small>
-    </form>
-  </div>
-
-  <!-- Firebase SDK (v9 Modular) -->
+  <title>Kayıt Ol | KönigBoard</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
   <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.2/firebase-app.js";
-    import { getAuth, createUserWithEmailAndPassword, sendEmailVerification } from "https://www.gstatic.com/firebasejs/10.7.2/firebase-auth.js";
-    import { getFirestore, doc, setDoc } from "https://www.gstatic.com/firebasejs/10.7.2/firebase-firestore.js";
+    // === Firebase Ayarları ===
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.11.1/firebase-app.js";
+    import { getAuth, createUserWithEmailAndPassword, sendEmailVerification } from "https://www.gstatic.com/firebasejs/10.11.1/firebase-auth.js";
 
     const firebaseConfig = {
       apiKey: "AIzaSyChTIs-88nIFeSsVuF2aMFJigwITWb3lbU",
@@ -161,63 +17,170 @@
       storageBucket: "konigboard.firebasestorage.app",
       messagingSenderId: "542862934182",
       appId: "1:542862934182:web:927ee1271cb5430fd4b467",
-      measurementId: "G-J9ZJSNMCLK"
     };
 
     const app = initializeApp(firebaseConfig);
     const auth = getAuth(app);
-    const db = getFirestore(app);
 
-    const btnPersonal = document.getElementById("btnPersonal");
-    const btnCompany = document.getElementById("btnCompany");
-    const personalFields = document.getElementById("personalFields");
-    const companyFields = document.getElementById("companyFields");
+    // === Form İşlemleri ===
+    document.addEventListener("DOMContentLoaded", () => {
+      const form = document.getElementById("registerForm");
+      const messageBox = document.getElementById("message");
 
-    btnPersonal.onclick = () => {
-      btnPersonal.classList.add("active");
-      btnCompany.classList.remove("active");
-      personalFields.style.display = "block";
-      companyFields.style.display = "none";
-    };
+      form.addEventListener("submit", async (e) => {
+        e.preventDefault();
 
-    btnCompany.onclick = () => {
-      btnCompany.classList.add("active");
-      btnPersonal.classList.remove("active");
-      personalFields.style.display = "none";
-      companyFields.style.display = "block";
-    };
+        const email = document.getElementById("email").value.trim();
+        const password = document.getElementById("password").value.trim();
+        const name = document.getElementById("fullname").value.trim();
 
-    const form = document.getElementById("registerForm");
-    const msg = document.getElementById("msg");
+        if (!email || !password || !name) {
+          showMessage("⚠️ Lütfen tüm alanları doldurun.", "error");
+          return;
+        }
 
-    form.addEventListener("submit", async (e) => {
-      e.preventDefault();
+        showMessage("⏳ Hesap oluşturuluyor...");
 
-      const isPersonal = btnPersonal.classList.contains("active");
-      const email = isPersonal ? emailPersonal.value : emailCompany.value;
-      const password = isPersonal ? password.value : passwordCompany.value;
-      const name = isPersonal ? fullname.value : companyName.value;
+        try {
+          const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+          await sendEmailVerification(userCredential.user);
 
-      try {
-        const cred = await createUserWithEmailAndPassword(auth, email, password);
-        await sendEmailVerification(cred.user);
+          showMessage("✅ Kayıt başarılı! Lütfen e-postanı kontrol et ve doğrulama linkine tıkla.", "success");
 
-        await setDoc(doc(db, "users", cred.user.uid), {
-          type: isPersonal ? "bireysel" : "kurumsal",
-          name: name,
-          email: email,
-          createdAt: new Date().toISOString(),
-          status: isPersonal ? "active" : "pending"
-        });
+          // Formu sıfırla
+          form.reset();
+        } catch (error) {
+          console.error("Kayıt hatası:", error);
+          let msg = "❌ Kayıt başarısız!";
+          if (error.code === "auth/email-already-in-use") msg = "📧 Bu e-posta zaten kayıtlı.";
+          else if (error.code === "auth/weak-password") msg = "🔒 Şifre en az 6 karakter olmalıdır.";
+          else if (error.code === "auth/invalid-email") msg = "🚫 Geçersiz e-posta adresi.";
+          showMessage(msg, "error");
+        }
+      });
 
-        msg.style.color = "limegreen";
-        msg.innerText = "✅ Kayıt başarılı! Lütfen e-posta kutunu kontrol et ve doğrulama linkine tıkla.";
-      } catch (err) {
-        console.error(err);
-        msg.style.color = "tomato";
-        msg.innerText = "❌ Hata: " + err.message;
+      function showMessage(text, type = "info") {
+        messageBox.innerText = text;
+        messageBox.className = "message " + type;
       }
     });
   </script>
+
+  <style>
+    body {
+      background: radial-gradient(circle at top left, #cc0000, #0d0d0d);
+      color: #fff;
+      font-family: 'Poppins', sans-serif;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+
+    .register-container {
+      background: rgba(20,20,20,0.9);
+      padding: 40px;
+      border-radius: 20px;
+      box-shadow: 0 0 25px rgba(0,0,0,0.5);
+      width: 360px;
+      text-align: center;
+      backdrop-filter: blur(8px);
+    }
+
+    h1 {
+      color: #cc0000;
+      margin-bottom: 30px;
+      font-size: 26px;
+    }
+
+    label {
+      display: block;
+      text-align: left;
+      margin-bottom: 6px;
+      color: #ddd;
+      font-weight: 500;
+      font-size: 14px;
+    }
+
+    input {
+      width: 100%;
+      padding: 12px;
+      margin-bottom: 16px;
+      border: none;
+      border-radius: 8px;
+      background: #1f1f1f;
+      color: #fff;
+      font-size: 14px;
+      outline: none;
+    }
+
+    input:focus {
+      border: 1px solid #cc0000;
+    }
+
+    button {
+      width: 100%;
+      background: #cc0000;
+      color: #fff;
+      border: none;
+      padding: 12px;
+      border-radius: 8px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+
+    button:hover {
+      background: #a80000;
+    }
+
+    .message {
+      margin-top: 15px;
+      font-size: 14px;
+      padding: 10px;
+      border-radius: 8px;
+      display: none;
+    }
+
+    .message.info { display: block; background: #222; color: #fff; }
+    .message.success { display: block; background: #094; color: #fff; }
+    .message.error { display: block; background: #700; color: #fff; }
+
+    .footer {
+      margin-top: 20px;
+      font-size: 13px;
+      color: #999;
+    }
+
+    .footer a {
+      color: #cc0000;
+      text-decoration: none;
+      font-weight: 500;
+    }
+  </style>
+</head>
+<body>
+  <div class="register-container">
+    <h1>Kayıt Ol</h1>
+    <form id="registerForm">
+      <label for="fullname">Ad Soyad</label>
+      <input type="text" id="fullname" placeholder="Ad Soyad" required>
+
+      <label for="email">E-posta</label>
+      <input type="email" id="email" placeholder="E-posta adresi" required>
+
+      <label for="password">Şifre</label>
+      <input type="password" id="password" placeholder="Şifre (min. 6 karakter)" required>
+
+      <button type="submit">Kayıt Ol</button>
+      <div id="message" class="message"></div>
+    </form>
+
+    <div class="footer">
+      Zaten hesabın var mı? <a href="login.html">Giriş yap</a>
+    </div>
+  </div>
 </body>
 </html>
