@@ -120,7 +120,7 @@
     usersBody.innerHTML = '<tr><td colspan="7" class="small">Yükleniyor...</td></tr>';
     try {
       // Basit fetch: tüm kullanıcı dokümanlarını çek (küçük sistem için OK; büyükse pagination gerek)
-      const q = query(collection(db, 'users'), orderBy('createdAt','desc'));
+      const q = query(collection(db, 'users'));
       const snap = await getDocs(q);
       allUsers = snap.docs.map(d => ({ id: d.id, ...d.data() }));
       renderTable(allUsers);
