@@ -1,186 +1,160 @@
 <!DOCTYPE html>
 <html lang="tr">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Kayıt Ol | KönigBoard</title>
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
-  <script type="module">
-    // === Firebase Ayarları ===
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.11.1/firebase-app.js";
-    import { getAuth, createUserWithEmailAndPassword, sendEmailVerification } from "https://www.gstatic.com/firebasejs/10.11.1/firebase-auth.js";
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kayıt Ol – KönigBoard</title>
 
-    const firebaseConfig = {
-      apiKey: "AIzaSyChTIs-88nIFeSsVuF2aMFJigwITWb3lbU",
-      authDomain: "konigboard.firebaseapp.com",
-      projectId: "konigboard",
-      storageBucket: "konigboard.firebasestorage.app",
-      messagingSenderId: "542862934182",
-      appId: "1:542862934182:web:927ee1271cb5430fd4b467",
-    };
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
 
-    const app = initializeApp(firebaseConfig);
-    const auth = getAuth(app);
-
-    // === Form İşlemleri ===
-    document.addEventListener("DOMContentLoaded", () => {
-      const form = document.getElementById("registerForm");
-      const messageBox = document.getElementById("message");
-
-      form.addEventListener("submit", async (e) => {
-        e.preventDefault();
-
-        const email = document.getElementById("email").value.trim();
-        const password = document.getElementById("password").value.trim();
-        const name = document.getElementById("fullname").value.trim();
-
-        if (!email || !password || !name) {
-          showMessage("⚠️ Lütfen tüm alanları doldurun.", "error");
-          return;
-        }
-
-        showMessage("⏳ Hesap oluşturuluyor...");
-
-        try {
-          const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-          await sendEmailVerification(userCredential.user);
-
-          showMessage("✅ Kayıt başarılı! Lütfen e-postanı kontrol et ve doğrulama linkine tıkla.", "success");
-
-          // Formu sıfırla
-          form.reset();
-        } catch (error) {
-          console.error("Kayıt hatası:", error);
-          let msg = "❌ Kayıt başarısız!";
-          if (error.code === "auth/email-already-in-use") msg = "📧 Bu e-posta zaten kayıtlı.";
-          else if (error.code === "auth/weak-password") msg = "🔒 Şifre en az 6 karakter olmalıdır.";
-          else if (error.code === "auth/invalid-email") msg = "🚫 Geçersiz e-posta adresi.";
-          showMessage(msg, "error");
-        }
-      });
-
-      function showMessage(text, type = "info") {
-        messageBox.innerText = text;
-        messageBox.className = "message " + type;
-      }
-    });
-  </script>
-
-  <style>
-    body {
-      background: radial-gradient(circle at top left, #cc0000, #0d0d0d);
-      color: #fff;
-      font-family: 'Poppins', sans-serif;
-      margin: 0;
-      padding: 0;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
-    }
-
-    .register-container {
-      background: rgba(20,20,20,0.9);
-      padding: 40px;
-      border-radius: 20px;
-      box-shadow: 0 0 25px rgba(0,0,0,0.5);
-      width: 360px;
-      text-align: center;
-      backdrop-filter: blur(8px);
-    }
-
-    h1 {
-      color: #cc0000;
-      margin-bottom: 30px;
-      font-size: 26px;
-    }
-
-    label {
-      display: block;
-      text-align: left;
-      margin-bottom: 6px;
-      color: #ddd;
-      font-weight: 500;
-      font-size: 14px;
-    }
-
-    input {
-      width: 100%;
-      padding: 12px;
-      margin-bottom: 16px;
-      border: none;
-      border-radius: 8px;
-      background: #1f1f1f;
-      color: #fff;
-      font-size: 14px;
-      outline: none;
-    }
-
-    input:focus {
-      border: 1px solid #cc0000;
-    }
-
-    button {
-      width: 100%;
-      background: #cc0000;
-      color: #fff;
-      border: none;
-      padding: 12px;
-      border-radius: 8px;
-      font-weight: 600;
-      cursor: pointer;
-      transition: 0.3s;
-    }
-
-    button:hover {
-      background: #a80000;
-    }
-
-    .message {
-      margin-top: 15px;
-      font-size: 14px;
-      padding: 10px;
-      border-radius: 8px;
-      display: none;
-    }
-
-    .message.info { display: block; background: #222; color: #fff; }
-    .message.success { display: block; background: #094; color: #fff; }
-    .message.error { display: block; background: #700; color: #fff; }
-
-    .footer {
-      margin-top: 20px;
-      font-size: 13px;
-      color: #999;
-    }
-
-    .footer a {
-      color: #cc0000;
-      text-decoration: none;
-      font-weight: 500;
-    }
-  </style>
+<style>
+  body{
+    font-family:Poppins,system-ui;
+    background:#0d0d0d;
+    color:#fff;
+    margin:0;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    min-height:100vh;
+  }
+  .box{
+    background:#141414;
+    padding:40px;
+    border-radius:16px;
+    width:100%;
+    max-width:520px;
+    box-shadow:0 0 30px rgba(0,0,0,.4);
+  }
+  h1{color:#cc0000;text-align:center;margin-bottom:25px}
+  label{display:block;margin-top:14px;color:#ccc;font-size:14px}
+  input{
+    width:100%;
+    padding:12px;
+    border-radius:8px;
+    border:none;
+    background:#1f1f1f;
+    color:#fff;
+    margin-top:6px;
+    font-size:15px;
+  }
+  button{
+    width:100%;
+    margin-top:28px;
+    padding:14px;
+    background:#cc0000;
+    border:none;
+    border-radius:10px;
+    color:#fff;
+    font-weight:600;
+    font-size:16px;
+    cursor:pointer;
+  }
+  button:hover{background:#a80000}
+  .small{
+    text-align:center;
+    font-size:13px;
+    color:#aaa;
+    margin-top:18px;
+  }
+  .error{color:#ff6b6b;font-size:14px;margin-top:12px;text-align:center}
+  .success{color:#4caf50;font-size:14px;margin-top:12px;text-align:center}
+</style>
 </head>
 <body>
-  <div class="register-container">
-    <h1>Kayıt Ol</h1>
-    <form id="registerForm">
-      <label for="fullname">Ad Soyad</label>
-      <input type="text" id="fullname" placeholder="Ad Soyad" required>
 
-      <label for="email">E-posta</label>
-      <input type="email" id="email" placeholder="E-posta adresi" required>
+<div class="box">
+  <h1>Kurumsal Kayıt</h1>
 
-      <label for="password">Şifre</label>
-      <input type="password" id="password" placeholder="Şifre (min. 6 karakter)" required>
+  <form id="registerForm">
+    <label>Şirket Adı</label>
+    <input id="companyName" required>
 
-      <button type="submit">Kayıt Ol</button>
-      <div id="message" class="message"></div>
-    </form>
+    <label>Yetkili Kişi</label>
+    <input id="authorized" required>
 
-    <div class="footer">
-      Zaten hesabın var mı? <a href="login.html">Giriş yap</a>
-    </div>
+    <label>E-posta</label>
+    <input id="email" type="email" required>
+
+    <label>Telefon</label>
+    <input id="phone" placeholder="+90..." required>
+
+    <label>Şifre</label>
+    <input id="password" type="password" required>
+
+    <button type="submit">Kayıt Ol</button>
+  </form>
+
+  <div id="msg"></div>
+
+  <div class="small">
+    Zaten hesabın var mı? <a href="login.html" style="color:#cc0000">Giriş Yap</a>
   </div>
+</div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.11.1/firebase-app.js";
+import { getAuth, createUserWithEmailAndPassword, sendEmailVerification } from "https://www.gstatic.com/firebasejs/10.11.1/firebase-auth.js";
+import { getFirestore, doc, setDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.11.1/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyChTIs-88nIFeSsVuF2aMFJigwITWb3lbU",
+  authDomain: "konigboard.firebaseapp.com",
+  projectId: "konigboard",
+  storageBucket: "konigboard.firebasestorage.app",
+  messagingSenderId: "542862934182",
+  appId: "1:542862934182:web:927ee1271cb5430fd4b467"
+};
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
+
+const form = document.getElementById("registerForm");
+const msg = document.getElementById("msg");
+
+form.addEventListener("submit", async (e)=>{
+  e.preventDefault();
+  msg.innerHTML = "";
+
+  const companyName = companyName.value.trim();
+  const authorized = authorized.value.trim();
+  const email = email.value.trim();
+  const phone = phone.value.trim();
+  const password = password.value;
+
+  try {
+    // 1️⃣ AUTH KAYDI
+    const cred = await createUserWithEmailAndPassword(auth, email, password);
+
+    // 2️⃣ MAIL DOĞRULAMA
+    await sendEmailVerification(cred.user);
+
+    // 3️⃣ FIRESTORE KAYDI (ADMIN BURADAN OKUYOR)
+    await setDoc(doc(db, "users", cred.user.uid), {
+      uid: cred.user.uid,
+      companyName,
+      authorized,
+      email,
+      phone,
+      type: "company",
+      plan: "none",
+      status: "pending",
+      createdAt: serverTimestamp()
+    });
+
+    msg.innerHTML = `<div class="success">
+      ✅ Kayıt başarılı.<br>
+      📩 Lütfen e-postanı doğrula.
+    </div>`;
+
+    form.reset();
+
+  } catch(err){
+    msg.innerHTML = `<div class="error">❌ ${err.message}</div>`;
+  }
+});
+</script>
+
 </body>
 </html>
