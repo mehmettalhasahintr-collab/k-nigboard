@@ -3,62 +3,58 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Kayıt Ol – KönigBoard</title>
+<title>Kurumsal Kayıt – KönigBoard</title>
 
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
 
 <style>
-  body{
-    font-family:Poppins,system-ui;
-    background:#0d0d0d;
-    color:#fff;
-    margin:0;
-    display:flex;
-    justify-content:center;
-    align-items:center;
-    min-height:100vh;
-  }
-  .box{
-    background:#141414;
-    padding:40px;
-    border-radius:16px;
-    width:100%;
-    max-width:520px;
-    box-shadow:0 0 30px rgba(0,0,0,.4);
-  }
-  h1{color:#cc0000;text-align:center;margin-bottom:25px}
-  label{display:block;margin-top:14px;color:#ccc;font-size:14px}
-  input{
-    width:100%;
-    padding:12px;
-    border-radius:8px;
-    border:none;
-    background:#1f1f1f;
-    color:#fff;
-    margin-top:6px;
-    font-size:15px;
-  }
-  button{
-    width:100%;
-    margin-top:28px;
-    padding:14px;
-    background:#cc0000;
-    border:none;
-    border-radius:10px;
-    color:#fff;
-    font-weight:600;
-    font-size:16px;
-    cursor:pointer;
-  }
-  button:hover{background:#a80000}
-  .small{
-    text-align:center;
-    font-size:13px;
-    color:#aaa;
-    margin-top:18px;
-  }
-  .error{color:#ff6b6b;font-size:14px;margin-top:12px;text-align:center}
-  .success{color:#4caf50;font-size:14px;margin-top:12px;text-align:center}
+body{
+  font-family:Poppins,system-ui;
+  background:#0d0d0d;
+  color:#fff;
+  margin:0;
+  min-height:100vh;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+}
+.box{
+  background:#141414;
+  padding:40px;
+  border-radius:16px;
+  width:100%;
+  max-width:560px;
+  box-shadow:0 0 30px rgba(0,0,0,.4);
+}
+h1{color:#cc0000;text-align:center;margin-bottom:25px}
+label{display:block;margin-top:14px;color:#ccc;font-size:14px}
+input{
+  width:100%;
+  padding:12px;
+  border-radius:8px;
+  border:none;
+  background:#1f1f1f;
+  color:#fff;
+  margin-top:6px;
+  font-size:15px;
+}
+button{
+  width:100%;
+  margin-top:26px;
+  padding:14px;
+  background:#cc0000;
+  border:none;
+  border-radius:10px;
+  color:#fff;
+  font-weight:600;
+  font-size:16px;
+  cursor:pointer;
+}
+button:hover{background:#a80000}
+.msg{margin-top:16px;text-align:center;font-size:14px}
+.error{color:#ff6b6b}
+.success{color:#4caf50}
+.small{text-align:center;color:#aaa;font-size:13px;margin-top:18px}
 </style>
 </head>
 <body>
@@ -77,7 +73,7 @@
     <input id="email" type="email" required>
 
     <label>Telefon</label>
-    <input id="phone" placeholder="+90..." required>
+    <input id="phone" placeholder="05xx xxx xx xx" required>
 
     <label>Şifre</label>
     <input id="password" type="password" required>
@@ -85,7 +81,7 @@
     <button type="submit">Kayıt Ol</button>
   </form>
 
-  <div id="msg"></div>
+  <div id="msg" class="msg"></div>
 
   <div class="small">
     Zaten hesabın var mı? <a href="login.html" style="color:#cc0000">Giriş Yap</a>
@@ -113,27 +109,35 @@ const db = getFirestore(app);
 const form = document.getElementById("registerForm");
 const msg = document.getElementById("msg");
 
+function cleanPhone(p){
+  return p.replace(/\D/g,""); // boşluk, tire, parantez vs temizler
+}
+
 form.addEventListener("submit", async (e)=>{
   e.preventDefault();
   msg.innerHTML = "";
 
-  const companyName = companyName.value.trim();
-  const authorized = authorized.value.trim();
-  const email = email.value.trim();
-  const phone = phone.value.trim();
-  const password = password.value;
+  const company = document.getElementById("companyName").value.trim();
+  const authorized = document.getElementById("authorized").value.trim();
+  const email = document.getElementById("email").value.trim();
+  const phoneRaw = document.getElementById("phone").value;
+  const password = document.getElementById("password").value;
 
-  try {
-    // 1️⃣ AUTH KAYDI
+  const phone = cleanPhone(phoneRaw);
+
+  if(phone.length < 10){
+    msg.innerHTML = `<div class="error">❌ Telefon numarası geçersiz</div>`;
+    return;
+  }
+
+  try{
     const cred = await createUserWithEmailAndPassword(auth, email, password);
 
-    // 2️⃣ MAIL DOĞRULAMA
     await sendEmailVerification(cred.user);
 
-    // 3️⃣ FIRESTORE KAYDI (ADMIN BURADAN OKUYOR)
-    await setDoc(doc(db, "users", cred.user.uid), {
+    await setDoc(doc(db,"users",cred.user.uid),{
       uid: cred.user.uid,
-      companyName,
+      companyName: company,
       authorized,
       email,
       phone,
@@ -144,13 +148,13 @@ form.addEventListener("submit", async (e)=>{
     });
 
     msg.innerHTML = `<div class="success">
-      ✅ Kayıt başarılı.<br>
-      📩 Lütfen e-postanı doğrula.
+      ✅ Kayıt başarılı<br>
+      📩 E-posta doğrulama gönderildi
     </div>`;
 
     form.reset();
 
-  } catch(err){
+  }catch(err){
     msg.innerHTML = `<div class="error">❌ ${err.message}</div>`;
   }
 });
