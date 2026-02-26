@@ -1,131 +1,184 @@
 <!DOCTYPE html>
 <html lang="tr">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Giriş Yap | KönigBoard</title>
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>KönigBoard | Giriş</title>
 
-  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.11.1/firebase-app.js";
-    import { getAuth, signInWithEmailAndPassword, sendPasswordResetEmail } from "https://www.gstatic.com/firebasejs/10.11.1/firebase-auth.js";
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
 
-    const firebaseConfig = {
-      apiKey: "AIzaSyChTIs-88nIFeSsVuF2aMFJigwITWb3lbU",
-      authDomain: "konigboard.firebaseapp.com",
-      projectId: "konigboard",
-      storageBucket: "konigboard.firebasestorage.app",
-      messagingSenderId: "542862934182",
-      appId: "1:542862934182:web:927ee1271cb5430fd4b467",
-    };
-
-    const app = initializeApp(firebaseConfig);
-    const auth = getAuth(app);
-
-    document.addEventListener("DOMContentLoaded", () => {
-      const form = document.getElementById("loginForm");
-      const msg = document.getElementById("message");
-      const resetBtn = document.getElementById("resetBtn");
-
-      form.addEventListener("submit", async (e) => {
-        e.preventDefault();
-        const email = document.getElementById("email").value.trim();
-        const password = document.getElementById("password").value.trim();
-
-        msg.innerText = "⏳ Giriş yapılıyor...";
-
-        try {
-          const userCredential = await signInWithEmailAndPassword(auth, email, password);
-          const user = userCredential.user;
-
-          // 🔒 E-posta doğrulanmış mı kontrolü
-          if (!user.emailVerified) {
-            msg.innerText = "📧 Lütfen önce e-posta adresini doğrula.";
-            return;
-          }
-
-          msg.innerText = "✅ Giriş başarılı! Yönlendiriliyor...";
-          setTimeout(() => {
-            window.location.href = "pricing.html";
-          }, 1500);
-
-        } catch (error) {
-          console.error(error);
-          let m = "❌ Giriş başarısız.";
-          if (error.code === "auth/invalid-credential" || error.code === "auth/wrong-password") m = "❌ E-posta veya şifre hatalı.";
-          if (error.code === "auth/user-not-found") m = "🚫 Bu e-posta adresiyle kayıt bulunamadı.";
-          msg.innerText = m;
-        }
-      });
-
-      // Şifremi unuttum
-      resetBtn.addEventListener("click", async () => {
-        const email = prompt("Şifreni sıfırlamak için e-posta adresini gir:");
-        if (!email) return;
-        try {
-          await sendPasswordResetEmail(auth, email);
-          alert("📩 Şifre sıfırlama linki e-postana gönderildi.");
-        } catch (error) {
-          alert("Hata: " + error.message);
-        }
-      });
-    });
-  </script>
-
-  <style>
-    body {
-      background: radial-gradient(circle at top left, #cc0000, #0d0d0d);
-      color: #fff;
-      font-family: 'Poppins', sans-serif;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
-    }
-    .login-container {
-      background: rgba(20,20,20,0.9);
-      padding: 40px;
-      border-radius: 20px;
-      box-shadow: 0 0 25px rgba(0,0,0,0.5);
-      width: 360px;
-      text-align: center;
-    }
-    h1 { color:#cc0000; margin-bottom:30px; font-size:26px; }
-    label { display:block; text-align:left; margin-bottom:6px; color:#ddd; font-weight:500; font-size:14px; }
-    input {
-      width:100%; padding:12px; margin-bottom:16px; border:none; border-radius:8px;
-      background:#1f1f1f; color:#fff; font-size:14px; outline:none;
-    }
-    input:focus { border:1px solid #cc0000; }
-    button {
-      width:100%; background:#cc0000; color:#fff; border:none; padding:12px;
-      border-radius:8px; font-weight:600; cursor:pointer; transition:0.3s;
-    }
-    button:hover { background:#a80000; }
-    .message { margin-top:15px; font-size:14px; color:#ccc; }
-    .footer { margin-top:20px; font-size:13px; color:#999; }
-    .footer a { color:#cc0000; text-decoration:none; font-weight:500; }
-  </style>
+<style>
+  body{
+    margin:0;
+    font-family:Poppins,system-ui;
+    background:radial-gradient(circle at top,#cc0000,#0d0d0d 60%);
+    color:#fff;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    height:100vh;
+  }
+  .box{
+    width:380px;
+    background:#111;
+    padding:32px;
+    border-radius:16px;
+    box-shadow:0 0 40px rgba(0,0,0,.6);
+  }
+  h1{
+    text-align:center;
+    color:#cc0000;
+    margin-bottom:10px;
+  }
+  p{
+    text-align:center;
+    color:#aaa;
+    font-size:14px;
+    margin-bottom:30px;
+  }
+  input{
+    width:100%;
+    padding:12px;
+    border-radius:10px;
+    border:none;
+    background:#1a1a1a;
+    color:#fff;
+    margin-bottom:14px;
+    font-size:15px;
+  }
+  input:focus{
+    outline:2px solid #cc0000;
+  }
+  button{
+    width:100%;
+    padding:14px;
+    border:none;
+    border-radius:10px;
+    background:#cc0000;
+    color:#fff;
+    font-weight:600;
+    font-size:16px;
+    cursor:pointer;
+  }
+  button:hover{ background:#a80000 }
+  .link{
+    margin-top:14px;
+    text-align:center;
+    font-size:14px;
+  }
+  .link a{
+    color:#cc0000;
+    text-decoration:none;
+    cursor:pointer;
+  }
+  .error{
+    margin-top:10px;
+    color:#ff6b6b;
+    font-size:14px;
+    text-align:center;
+    min-height:18px;
+  }
+</style>
 </head>
-
 <body>
-  <div class="login-container">
-    <h1>Giriş Yap</h1>
-    <form id="loginForm">
-      <label for="email">E-posta</label>
-      <input type="email" id="email" placeholder="E-posta adresi" required>
 
-      <label for="password">Şifre</label>
-      <input type="password" id="password" placeholder="Şifre" required>
+<div class="box">
+  <h1>KönigBoard</h1>
+  <p>Yönetim sistemine giriş yap</p>
 
-      <button type="submit">Giriş Yap</button>
-      <p id="message" class="message"></p>
-    </form>
+  <input id="email" type="email" placeholder="E-posta">
+  <input id="password" type="password" placeholder="Şifre">
 
-    <div class="footer">
-      <a href="#" id="resetBtn">Şifremi unuttum</a> <br>
-      Hesabın yok mu? <a href="register.html">Kayıt ol</a>
-    </div>
+  <button id="loginBtn">Giriş Yap</button>
+
+  <div class="link">
+    <a id="resetBtn">Şifremi Unuttum</a>
   </div>
+
+  <div class="error" id="errorBox"></div>
+</div>
+
+<!-- FIREBASE -->
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.11.1/firebase-app.js";
+import { getAuth, signInWithEmailAndPassword, sendPasswordResetEmail } 
+  from "https://www.gstatic.com/firebasejs/10.11.1/firebase-auth.js";
+import { getFirestore, doc, getDoc } 
+  from "https://www.gstatic.com/firebasejs/10.11.1/firebase-firestore.js";
+
+/* 🔥 KENDİ PROJEN */
+const firebaseConfig = {
+  apiKey: "AIzaSyChTIs-88nIFeSsVuF2aMFJigwITWb3lbU",
+  authDomain: "konigboard.firebaseapp.com",
+  projectId: "konigboard",
+  storageBucket: "konigboard.firebasestorage.app",
+  messagingSenderId: "542862934182",
+  appId: "1:542862934182:web:927ee1271cb5430fd4b467",
+};
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
+
+const emailEl = document.getElementById("email");
+const passEl = document.getElementById("password");
+const errorBox = document.getElementById("errorBox");
+
+/* === LOGIN === */
+document.getElementById("loginBtn").onclick = async () => {
+  errorBox.textContent = "";
+
+  const email = emailEl.value.trim();
+  const password = passEl.value;
+
+  if(!email || !password){
+    errorBox.textContent = "E-posta ve şifre girin.";
+    return;
+  }
+
+  try{
+    const cred = await signInWithEmailAndPassword(auth, email, password);
+    const uid = cred.user.uid;
+
+    const snap = await getDoc(doc(db,"users",uid));
+    if(!snap.exists()){
+      errorBox.textContent = "Kullanıcı kaydı bulunamadı.";
+      return;
+    }
+
+    const user = snap.data();
+
+    if(user.status !== "active"){
+      errorBox.textContent = "Hesabınız aktif değil.";
+      return;
+    }
+
+    if(user.plan === "free" || user.plan === "paid"){
+      window.location.href = "https://konigboardyonetici.vercel.app";
+    } else {
+      window.location.href = "pricing.html";
+    }
+
+  }catch(err){
+    errorBox.textContent = "Giriş başarısız: " + err.message;
+  }
+};
+
+/* === ŞİFREMİ UNUTTUM === */
+document.getElementById("resetBtn").onclick = async () => {
+  const email = emailEl.value.trim();
+  if(!email){
+    errorBox.textContent = "Önce e-posta girin.";
+    return;
+  }
+  try{
+    await sendPasswordResetEmail(auth,email);
+    errorBox.textContent = "Şifre sıfırlama e-postası gönderildi.";
+  }catch(err){
+    errorBox.textContent = err.message;
+  }
+};
+</script>
+
 </body>
 </html>
