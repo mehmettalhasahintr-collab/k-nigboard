@@ -2,96 +2,84 @@
 <html lang="tr">
 <head>
 <meta charset="UTF-8">
+<title>KönigBoard | Kurumsal Kayıt</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Kurumsal Kayıt – KönigBoard</title>
 
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
 
 <style>
 body{
-  font-family:Poppins,system-ui;
+  font-family:Poppins,sans-serif;
   background:#0d0d0d;
   color:#fff;
   margin:0;
-  min-height:100vh;
   display:flex;
   justify-content:center;
   align-items:center;
+  min-height:100vh;
 }
 .box{
   background:#141414;
   padding:40px;
   border-radius:16px;
   width:100%;
-  max-width:560px;
-  box-shadow:0 0 30px rgba(0,0,0,.4);
+  max-width:420px;
 }
 h1{color:#cc0000;text-align:center;margin-bottom:25px}
-label{display:block;margin-top:14px;color:#ccc;font-size:14px}
 input{
   width:100%;
   padding:12px;
+  margin-bottom:14px;
   border-radius:8px;
   border:none;
   background:#1f1f1f;
   color:#fff;
-  margin-top:6px;
-  font-size:15px;
 }
 button{
   width:100%;
-  margin-top:26px;
   padding:14px;
-  background:#cc0000;
   border:none;
   border-radius:10px;
+  background:#cc0000;
   color:#fff;
   font-weight:600;
-  font-size:16px;
   cursor:pointer;
 }
 button:hover{background:#a80000}
-.msg{margin-top:16px;text-align:center;font-size:14px}
-.error{color:#ff6b6b}
-.success{color:#4caf50}
-.small{text-align:center;color:#aaa;font-size:13px;margin-top:18px}
+small{display:block;text-align:center;margin-top:15px;color:#aaa}
 </style>
 </head>
+
 <body>
 
 <div class="box">
   <h1>Kurumsal Kayıt</h1>
 
-  <form id="registerForm">
-    <label>Şirket Adı</label>
-    <input id="companyName" required>
+  <input id="companyName" placeholder="Şirket Adı">
+  <input id="authorized" placeholder="Yetkili Kişi">
+  <input id="phone" placeholder="Telefon (+90...)">
+  <input id="email" type="email" placeholder="E-posta">
+  <input id="password" type="password" placeholder="Şifre (en az 6 karakter)">
 
-    <label>Yetkili Kişi</label>
-    <input id="authorized" required>
+  <button id="registerBtn">Kayıt Ol</button>
 
-    <label>E-posta</label>
-    <input id="email" type="email" required>
-
-    <label>Telefon</label>
-    <input id="phone" placeholder="05xx xxx xx xx" required>
-
-    <label>Şifre</label>
-    <input id="password" type="password" required>
-
-    <button type="submit">Kayıt Ol</button>
-  </form>
-
-  <div id="msg" class="msg"></div>
-
-  <div class="small">
-    Zaten hesabın var mı? <a href="login.html" style="color:#cc0000">Giriş Yap</a>
-  </div>
+  <small>Zaten hesabın var mı? <a href="login.html" style="color:#cc0000">Giriş Yap</a></small>
 </div>
 
+<!-- FIREBASE -->
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.11.1/firebase-app.js";
-import { getAuth, createUserWithEmailAndPassword, sendEmailVerification } from "https://www.gstatic.com/firebasejs/10.11.1/firebase-auth.js";
-import { getFirestore, doc, setDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.11.1/firebase-firestore.js";
+import { 
+  getAuth, 
+  createUserWithEmailAndPassword, 
+  sendEmailVerification 
+} from "https://www.gstatic.com/firebasejs/10.11.1/firebase-auth.js";
+import { 
+  getFirestore, 
+  doc, 
+  setDoc, 
+  serverTimestamp 
+} from "https://www.gstatic.com/firebasejs/10.11.1/firebase-firestore.js";
 
 const firebaseConfig = {
   apiKey: "AIzaSyChTIs-88nIFeSsVuF2aMFJigwITWb3lbU",
@@ -106,58 +94,40 @@ const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
 
-const form = document.getElementById("registerForm");
-const msg = document.getElementById("msg");
-
-function cleanPhone(p){
-  return p.replace(/\D/g,""); // boşluk, tire, parantez vs temizler
-}
-
-form.addEventListener("submit", async (e)=>{
-  e.preventDefault();
-  msg.innerHTML = "";
-
-  const company = document.getElementById("companyName").value.trim();
+document.getElementById("registerBtn").onclick = async () => {
+  const companyName = document.getElementById("companyName").value.trim();
   const authorized = document.getElementById("authorized").value.trim();
+  const phone = document.getElementById("phone").value.trim();
   const email = document.getElementById("email").value.trim();
-  const phoneRaw = document.getElementById("phone").value;
   const password = document.getElementById("password").value;
 
-  const phone = cleanPhone(phoneRaw);
-
-  if(phone.length < 10){
-    msg.innerHTML = `<div class="error">❌ Telefon numarası geçersiz</div>`;
+  if(!companyName || !authorized || !phone || !email || !password){
+    alert("Tüm alanları doldur");
     return;
   }
 
   try{
     const cred = await createUserWithEmailAndPassword(auth, email, password);
 
-    await sendEmailVerification(cred.user);
-
-    await setDoc(doc(db,"users",cred.user.uid),{
-      uid: cred.user.uid,
-      companyName: company,
+    await setDoc(doc(db, "users", cred.user.uid), {
+      companyName,
       authorized,
-      email,
       phone,
-      type: "company",
+      email,
       plan: "none",
       status: "pending",
       createdAt: serverTimestamp()
     });
 
-    msg.innerHTML = `<div class="success">
-      ✅ Kayıt başarılı<br>
-      📩 E-posta doğrulama gönderildi
-    </div>`;
+    await sendEmailVerification(cred.user);
 
-    form.reset();
+    alert("✅ Kayıt başarılı!\nE-postanı doğrula.");
+    window.location.href = "login.html";
 
   }catch(err){
-    msg.innerHTML = `<div class="error">❌ ${err.message}</div>`;
+    alert("❌ Hata: " + err.message);
   }
-});
+};
 </script>
 
 </body>
