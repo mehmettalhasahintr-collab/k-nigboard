@@ -215,29 +215,6 @@
 </style>
 
 <script>
-document.addEventListener('DOMContentLoaded', () => {
-  const toggle = document.getElementById('menuToggle');
-  const logo = document.querySelector('.logo');
-
-  toggle.addEventListener('click', () => {
-    document.body.classList.toggle('nav-open');
-    toggle.setAttribute(
-      'aria-expanded',
-      document.body.classList.contains('nav-open')
-    );
-  });
-
-  window.addEventListener('scroll', () => {
-    logo.style.height = window.scrollY > 60 ? '48px' : '64px';
-  });
-
-  window.addEventListener('resize', () => {
-    if (window.innerWidth > 900) {
-      document.body.classList.remove('nav-open');
-      toggle.setAttribute('aria-expanded', 'false');
-    }
-  });
-});
 const toggle = document.getElementById("menuToggle");
 
 toggle.addEventListener("click",()=>{
