@@ -21,10 +21,11 @@ body{
 
 .form-box{
   width:100%;
-  max-width:500px;
+  max-width:520px;
   background:#141414;
   padding:40px;
-  border-radius:16px;
+  border-radius:18px;
+  box-shadow:0 0 40px rgba(0,0,0,.5);
 }
 
 h1{
@@ -35,12 +36,13 @@ h1{
 
 input,select{
   width:100%;
-  padding:12px;
+  padding:13px;
   margin-bottom:15px;
   border-radius:8px;
   border:none;
   background:#1c1c1c;
   color:#fff;
+  font-size:14px;
 }
 
 button{
@@ -52,6 +54,8 @@ button{
   color:#fff;
   font-weight:600;
   cursor:pointer;
+  font-size:15px;
+  transition:.3s;
 }
 
 button:hover{
@@ -61,6 +65,7 @@ button:hover{
 #message{
   margin-bottom:15px;
   font-size:14px;
+  min-height:20px;
 }
 
 .success{color:#00cc66;}
@@ -97,7 +102,7 @@ button:hover{
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.11.1/firebase-app.js";
-import { getAuth, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.11.1/firebase-auth.js";
+import { getAuth, createUserWithEmailAndPassword, sendEmailVerification } from "https://www.gstatic.com/firebasejs/10.11.1/firebase-auth.js";
 import { getFirestore, doc, setDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.11.1/firebase-firestore.js";
 
 /* Firebase Config */
@@ -128,6 +133,8 @@ form.addEventListener("submit", async (e)=>{
   const password = document.getElementById("password").value;
   const password2 = document.getElementById("password2").value;
 
+  message.innerHTML = "";
+
   if(password !== password2){
     message.innerHTML = '<div class="error">Şifreler uyuşmuyor.</div>';
     return;
@@ -137,6 +144,10 @@ form.addEventListener("submit", async (e)=>{
     const userCredential = await createUserWithEmailAndPassword(auth, email, password);
     const user = userCredential.user;
 
+    // 🔥 Email doğrulama gönder
+    await sendEmailVerification(user);
+
+    // 🔥 Firestore’a kaydet
     await setDoc(doc(db,"users",user.uid),{
       name,
       email,
@@ -149,14 +160,12 @@ form.addEventListener("submit", async (e)=>{
       createdAt: serverTimestamp()
     });
 
-    message.innerHTML = '<div class="success">Kayıt başarılı! Yönlendiriliyorsunuz...</div>';
+    message.innerHTML = '<div class="success">Kayıt başarılı! Lütfen e-posta adresinizi doğrulayın.</div>';
 
-    setTimeout(()=>{
-      window.location.href="pricing.html";
-    },2000);
+    form.reset();
 
   }catch(err){
-    message.innerHTML = '<div class="error">'+err.message+'</div>';
+    message.innerHTML = '<div class="error">'+ err.message +'</div>';
   }
 
 });
