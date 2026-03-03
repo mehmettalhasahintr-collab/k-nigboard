@@ -8,76 +8,76 @@
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
 
 <style>
-  body{
-    margin:0;
-    font-family:Poppins,system-ui;
-    background:radial-gradient(circle at top,#cc0000,#0d0d0d 60%);
-    color:#fff;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    height:100vh;
-  }
-  .box{
-    width:380px;
-    background:#111;
-    padding:32px;
-    border-radius:16px;
-    box-shadow:0 0 40px rgba(0,0,0,.6);
-  }
-  h1{
-    text-align:center;
-    color:#cc0000;
-    margin-bottom:10px;
-  }
-  p{
-    text-align:center;
-    color:#aaa;
-    font-size:14px;
-    margin-bottom:30px;
-  }
-  input{
-    width:100%;
-    padding:12px;
-    border-radius:10px;
-    border:none;
-    background:#1a1a1a;
-    color:#fff;
-    margin-bottom:14px;
-    font-size:15px;
-  }
-  input:focus{
-    outline:2px solid #cc0000;
-  }
-  button{
-    width:100%;
-    padding:14px;
-    border:none;
-    border-radius:10px;
-    background:#cc0000;
-    color:#fff;
-    font-weight:600;
-    font-size:16px;
-    cursor:pointer;
-  }
-  button:hover{ background:#a80000 }
-  .link{
-    margin-top:14px;
-    text-align:center;
-    font-size:14px;
-  }
-  .link a{
-    color:#cc0000;
-    text-decoration:none;
-    cursor:pointer;
-  }
-  .error{
-    margin-top:10px;
-    color:#ff6b6b;
-    font-size:14px;
-    text-align:center;
-    min-height:18px;
-  }
+body{
+  margin:0;
+  font-family:Poppins,system-ui;
+  background:radial-gradient(circle at top,#cc0000,#0d0d0d 60%);
+  color:#fff;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  height:100vh;
+}
+.box{
+  width:380px;
+  background:#111;
+  padding:32px;
+  border-radius:16px;
+  box-shadow:0 0 40px rgba(0,0,0,.6);
+}
+h1{
+  text-align:center;
+  color:#cc0000;
+  margin-bottom:10px;
+}
+p{
+  text-align:center;
+  color:#aaa;
+  font-size:14px;
+  margin-bottom:30px;
+}
+input{
+  width:100%;
+  padding:12px;
+  border-radius:10px;
+  border:none;
+  background:#1a1a1a;
+  color:#fff;
+  margin-bottom:14px;
+  font-size:15px;
+}
+input:focus{
+  outline:2px solid #cc0000;
+}
+button{
+  width:100%;
+  padding:14px;
+  border:none;
+  border-radius:10px;
+  background:#cc0000;
+  color:#fff;
+  font-weight:600;
+  font-size:16px;
+  cursor:pointer;
+}
+button:hover{ background:#a80000 }
+.link{
+  margin-top:14px;
+  text-align:center;
+  font-size:14px;
+}
+.link a{
+  color:#cc0000;
+  text-decoration:none;
+  cursor:pointer;
+}
+.error{
+  margin-top:10px;
+  color:#ff6b6b;
+  font-size:14px;
+  text-align:center;
+  min-height:18px;
+}
 </style>
 </head>
 <body>
@@ -98,7 +98,6 @@
   <div class="error" id="errorBox"></div>
 </div>
 
-<!-- FIREBASE -->
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.11.1/firebase-app.js";
 import { getAuth, signInWithEmailAndPassword, sendPasswordResetEmail } 
@@ -106,7 +105,6 @@ import { getAuth, signInWithEmailAndPassword, sendPasswordResetEmail }
 import { getFirestore, doc, getDoc } 
   from "https://www.gstatic.com/firebasejs/10.11.1/firebase-firestore.js";
 
-/* 🔥 KENDİ PROJEN */
 const firebaseConfig = {
   apiKey: "AIzaSyChTIs-88nIFeSsVuF2aMFJigwITWb3lbU",
   authDomain: "konigboard.firebaseapp.com",
@@ -124,7 +122,7 @@ const emailEl = document.getElementById("email");
 const passEl = document.getElementById("password");
 const errorBox = document.getElementById("errorBox");
 
-/* === LOGIN === */
+/* LOGIN */
 document.getElementById("loginBtn").onclick = async () => {
   errorBox.textContent = "";
 
@@ -138,33 +136,37 @@ document.getElementById("loginBtn").onclick = async () => {
 
   try{
     const cred = await signInWithEmailAndPassword(auth, email, password);
-    const uid = cred.user.uid;
+    const userAuth = cred.user;
 
-    const snap = await getDoc(doc(db,"users",uid));
+    // Firestore kaydını al
+    const snap = await getDoc(doc(db,"users", userAuth.uid));
+
     if(!snap.exists()){
-      errorBox.textContent = "Kullanıcı kaydı bulunamadı.";
+      errorBox.textContent = "Sistem kaydı bulunamadı.";
       return;
     }
 
     const user = snap.data();
 
+    // Hesap aktif mi?
     if(user.status !== "active"){
-      errorBox.textContent = "Hesabınız aktif değil.";
+      errorBox.textContent = "Hesabınız henüz aktif edilmemiş.";
       return;
     }
 
-    if(user.plan === "free" || user.plan === "paid"){
+    // Abonelik kontrolü
+    if(user.subscription && user.subscription.active === true){
       window.location.href = "https://konigboardyonetici.vercel.app";
     } else {
       window.location.href = "pricing.html";
     }
 
   }catch(err){
-    errorBox.textContent = "Giriş başarısız: " + err.message;
+    errorBox.textContent = "Giriş başarısız. Bilgileri kontrol edin.";
   }
 };
 
-/* === ŞİFREMİ UNUTTUM === */
+/* ŞİFREMİ UNUTTUM */
 document.getElementById("resetBtn").onclick = async () => {
   const email = emailEl.value.trim();
   if(!email){
@@ -175,7 +177,7 @@ document.getElementById("resetBtn").onclick = async () => {
     await sendPasswordResetEmail(auth,email);
     errorBox.textContent = "Şifre sıfırlama e-postası gönderildi.";
   }catch(err){
-    errorBox.textContent = err.message;
+    errorBox.textContent = "Mail gönderilemedi.";
   }
 };
 </script>
