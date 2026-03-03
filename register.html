@@ -2,132 +2,159 @@
 <html lang="tr">
 <head>
 <meta charset="UTF-8">
-<title>KönigBoard | Kurumsal Kayıt</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kayıt Ol | KönigBoard</title>
 
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
 
 <style>
 body{
-  font-family:Poppins,sans-serif;
-  background:#0d0d0d;
-  color:#fff;
   margin:0;
+  background:#0d0d0d;
+  font-family:Poppins;
+  color:#fff;
   display:flex;
   justify-content:center;
   align-items:center;
   min-height:100vh;
 }
-.box{
+
+.form-box{
+  width:100%;
+  max-width:500px;
   background:#141414;
   padding:40px;
   border-radius:16px;
-  width:100%;
-  max-width:420px;
 }
-h1{color:#cc0000;text-align:center;margin-bottom:25px}
-input{
+
+h1{
+  text-align:center;
+  color:#cc0000;
+  margin-bottom:25px;
+}
+
+input,select{
   width:100%;
   padding:12px;
-  margin-bottom:14px;
+  margin-bottom:15px;
   border-radius:8px;
   border:none;
-  background:#1f1f1f;
+  background:#1c1c1c;
   color:#fff;
 }
+
 button{
   width:100%;
   padding:14px;
+  background:#cc0000;
   border:none;
   border-radius:10px;
-  background:#cc0000;
   color:#fff;
   font-weight:600;
   cursor:pointer;
 }
-button:hover{background:#a80000}
-small{display:block;text-align:center;margin-top:15px;color:#aaa}
+
+button:hover{
+  background:#a80000;
+}
+
+#message{
+  margin-bottom:15px;
+  font-size:14px;
+}
+.success{color:#00cc66;}
+.error{color:#ff4d4d;}
 </style>
 </head>
-
 <body>
 
-<div class="box">
-  <h1>Kurumsal Kayıt</h1>
+<div class="form-box">
+<h1>Kayıt Ol</h1>
 
-  <input id="companyName" placeholder="Şirket Adı">
-  <input id="authorized" placeholder="Yetkili Kişi">
-  <input id="phone" placeholder="Telefon (+90...)">
-  <input id="email" type="email" placeholder="E-posta">
-  <input id="password" type="password" placeholder="Şifre (en az 6 karakter)">
+<div id="message"></div>
 
-  <button id="registerBtn">Kayıt Ol</button>
+<form id="registerForm">
+<input id="name" placeholder="Ad Soyad *" required>
+<input id="email" type="email" placeholder="E-posta *" required>
+<input id="phone" placeholder="Telefon *" required>
+<input id="companyName" placeholder="Şirket Adı *" required>
 
-  <small>Zaten hesabın var mı? <a href="login.html" style="color:#cc0000">Giriş Yap</a></small>
+<select id="companyType" required>
+<option value="">Şirket Türü *</option>
+<option>Limited</option>
+<option>Anonim</option>
+<option>Şahıs</option>
+<option>Diğer</option>
+</select>
+
+<input id="password" type="password" placeholder="Şifre *" required>
+<input id="password2" type="password" placeholder="Şifre Tekrar *" required>
+
+<button type="submit">Kayıt Ol</button>
+</form>
 </div>
 
-<!-- FIREBASE -->
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.11.1/firebase-app.js";
-import { 
-  getAuth, 
-  createUserWithEmailAndPassword, 
-  sendEmailVerification 
-} from "https://www.gstatic.com/firebasejs/10.11.1/firebase-auth.js";
-import { 
-  getFirestore, 
-  doc, 
-  setDoc, 
-  serverTimestamp 
-} from "https://www.gstatic.com/firebasejs/10.11.1/firebase-firestore.js";
+import { getAuth, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.11.1/firebase-auth.js";
+import { getFirestore, doc, setDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.11.1/firebase-firestore.js";
 
+/* Firebase config */
 const firebaseConfig = {
-  apiKey: "AIzaSyChTIs-88nIFeSsVuF2aMFJigwITWb3lbU",
+  apiKey: "API_KEY",
   authDomain: "konigboard.firebaseapp.com",
-  projectId: "konigboard",
-  storageBucket: "konigboard.firebasestorage.app",
-  messagingSenderId: "542862934182",
-  appId: "1:542862934182:web:927ee1271cb5430fd4b467"
+  projectId: "konigboard"
 };
 
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
 
-document.getElementById("registerBtn").onclick = async () => {
-  const companyName = document.getElementById("companyName").value.trim();
-  const authorized = document.getElementById("authorized").value.trim();
-  const phone = document.getElementById("phone").value.trim();
-  const email = document.getElementById("email").value.trim();
-  const password = document.getElementById("password").value;
+const form = document.getElementById("registerForm");
+const message = document.getElementById("message");
 
-  if(!companyName || !authorized || !phone || !email || !password){
-    alert("Tüm alanları doldur");
+form.addEventListener("submit", async (e)=>{
+  e.preventDefault();
+
+  const name = form.name.value.trim();
+  const email = form.email.value.trim();
+  const phone = form.phone.value.trim();
+  const companyName = form.companyName.value.trim();
+  const companyType = form.companyType.value;
+  const password = form.password.value;
+  const password2 = form.password2.value;
+
+  if(password !== password2){
+    message.innerHTML = '<div class="error">Şifreler uyuşmuyor.</div>';
     return;
   }
 
   try{
-    const cred = await createUserWithEmailAndPassword(auth, email, password);
+    const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+    const user = userCredential.user;
 
-    await setDoc(doc(db, "users", cred.user.uid), {
-      companyName,
-      authorized,
-      phone,
+    await setDoc(doc(db,"users",user.uid),{
+      name,
       email,
-      plan: "none",
-      status: "pending",
+      phone,
+      companyName,
+      companyType,
+      role:"owner",
+      status:"pending",
+      subscription:null,
       createdAt: serverTimestamp()
     });
 
-    await sendEmailVerification(cred.user);
+    message.innerHTML = '<div class="success">Kayıt başarılı! Yönlendiriliyorsunuz...</div>';
 
-    alert("✅ Kayıt başarılı!\nE-postanı doğrula.");
-    window.location.href = "login.html";
+    setTimeout(()=>{
+      window.location.href="pricing.html";
+    },2000);
 
   }catch(err){
-    alert("❌ Hata: " + err.message);
+    message.innerHTML = '<div class="error">'+err.message+'</div>';
   }
-};
+});
 </script>
 
 </body>
