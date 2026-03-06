@@ -3,14 +3,18 @@
 <head>
 
 <meta charset="UTF-8">
-<title>E-posta Doğrulama</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Email Doğrulama</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
 
 <style>
 
 body{
 background:#0d0d0d;
-color:#fff;
 font-family:Poppins;
+color:#fff;
 display:flex;
 align-items:center;
 justify-content:center;
@@ -25,47 +29,51 @@ border-radius:16px;
 max-width:420px;
 }
 
+h2{
+color:#cc0000;
+}
+
 button{
-margin-top:20px;
+margin-top:25px;
 padding:12px 20px;
 background:#cc0000;
 border:none;
 color:#fff;
 border-radius:8px;
 cursor:pointer;
+font-weight:600;
+}
+
+button:hover{
+background:#a80000;
 }
 
 </style>
+
 </head>
 
 <body>
 
 <div class="box">
 
-<h2>E-posta gönderildi</h2>
+<h2>Email Gönderildi</h2>
 
 <p>
-
-E-posta adresinize doğrulama linki gönderdik.
-
-Maildeki linke tıkladıktan sonra aşağıdaki butona basın.
-
+E-postanıza doğrulama linki gönderdik.
+<br><br>
+Maili onayladıktan sonra aşağıdaki butona basın.
 </p>
 
 <button id="continueBtn">
-
 Maili Doğruladım
-
 </button>
 
 </div>
 
-
 <script type="module">
 
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.11.1/firebase-app.js";
-import { getAuth, reload }
-from "https://www.gstatic.com/firebasejs/10.11.1/firebase-auth.js";
+import { getAuth } from "https://www.gstatic.com/firebasejs/10.11.1/firebase-auth.js";
 
 const firebaseConfig = {
 apiKey: "AIzaSyChTIs-88nIFeSsVuF2aMFJigwITWb3lbU",
@@ -83,12 +91,7 @@ document.getElementById("continueBtn").onclick = async ()=>{
 
 const user = auth.currentUser;
 
-if(!user){
-alert("Giriş yapmanız gerekiyor");
-return;
-}
-
-await reload(user);
+await user.reload();
 
 if(user.emailVerified){
 
@@ -96,7 +99,7 @@ window.location.href="pricing.html";
 
 }else{
 
-alert("Mail henüz doğrulanmadı.");
+alert("Mail henüz doğrulanmamış.");
 
 }
 

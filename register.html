@@ -1,13 +1,16 @@
 <!DOCTYPE html>
 <html lang="tr">
 <head>
+
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
 <title>Kayıt Ol | KönigBoard</title>
 
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
 
 <style>
+
 body{
 margin:0;
 background:#0d0d0d;
@@ -64,11 +67,14 @@ background:#a80000;
 #message{
 margin-bottom:15px;
 font-size:14px;
+min-height:20px;
 }
 
 .success{color:#00cc66;}
 .error{color:#ff4d4d;}
+
 </style>
+
 </head>
 
 <body>
@@ -76,14 +82,18 @@ font-size:14px;
 <div class="form-box">
 
 <h1>Kayıt Ol</h1>
+<h5>(E-Posta gelmedi ise spam klasörünü kontrol edin.)</h5>
 
 <div id="message"></div>
 
 <form id="registerForm">
 
 <input id="name" placeholder="Ad Soyad *" required>
+
 <input id="email" type="email" placeholder="E-posta *" required>
+
 <input id="phone" placeholder="Telefon *" required>
+
 <input id="companyName" placeholder="Şirket Adı *" required>
 
 <select id="companyType" required>
@@ -95,11 +105,13 @@ font-size:14px;
 </select>
 
 <input id="password" type="password" placeholder="Şifre *" required>
+
 <input id="password2" type="password" placeholder="Şifre Tekrar *" required>
 
 <button type="submit">Kayıt Ol</button>
 
 </form>
+
 </div>
 
 
@@ -126,12 +138,10 @@ const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
 
-
 const form = document.getElementById("registerForm");
 const message = document.getElementById("message");
 
-
-form.addEventListener("submit", async function(e){
+form.addEventListener("submit", async (e)=>{
 
 e.preventDefault();
 
@@ -146,23 +156,28 @@ const password2 = document.getElementById("password2").value;
 message.innerHTML="";
 
 if(password !== password2){
-message.innerHTML='<div class="error">Şifreler uyuşmuyor</div>';
+
+message.innerHTML='<div class="error">Şifreler uyuşmuyor.</div>';
 return;
+
 }
 
 try{
 
-const cred = await createUserWithEmailAndPassword(auth,email,password);
+const userCredential = await createUserWithEmailAndPassword(auth,email,password);
 
-await sendEmailVerification(cred.user);
+const user = userCredential.user;
 
-await setDoc(doc(db,"users",cred.user.uid),{
+await sendEmailVerification(user);
+
+await setDoc(doc(db,"users",user.uid),{
 
 name,
 email,
 phone,
 companyName,
 companyType,
+role:"owner",
 status:"pending",
 subscription:null,
 createdAt: serverTimestamp()
@@ -171,7 +186,9 @@ createdAt: serverTimestamp()
 
 message.innerHTML='<div class="success">Kayıt başarılı! Mailinizi doğrulayın.</div>';
 
-form.reset();
+setTimeout(()=>{
+window.location.href="verify-email.html";
+},1500);
 
 }catch(err){
 
