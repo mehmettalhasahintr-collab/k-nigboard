@@ -9,77 +9,79 @@
 
 <style>
 body{
-  margin:0;
-  background:#0d0d0d;
-  font-family:Poppins;
-  color:#fff;
-  display:flex;
-  justify-content:center;
-  align-items:center;
-  min-height:100vh;
+margin:0;
+background:#0d0d0d;
+font-family:Poppins;
+color:#fff;
+display:flex;
+justify-content:center;
+align-items:center;
+min-height:100vh;
 }
 
 .form-box{
-  width:100%;
-  max-width:520px;
-  background:#141414;
-  padding:40px;
-  border-radius:18px;
-  box-shadow:0 0 40px rgba(0,0,0,.5);
+width:100%;
+max-width:520px;
+background:#141414;
+padding:40px;
+border-radius:18px;
+box-shadow:0 0 40px rgba(0,0,0,.5);
 }
 
 h1{
-  text-align:center;
-  color:#cc0000;
-  margin-bottom:25px;
+text-align:center;
+color:#cc0000;
+margin-bottom:25px;
 }
 
 input,select{
-  width:100%;
-  padding:13px;
-  margin-bottom:15px;
-  border-radius:8px;
-  border:none;
-  background:#1c1c1c;
-  color:#fff;
-  font-size:14px;
+width:100%;
+padding:13px;
+margin-bottom:15px;
+border-radius:8px;
+border:none;
+background:#1c1c1c;
+color:#fff;
+font-size:14px;
 }
 
 button{
-  width:100%;
-  padding:14px;
-  background:#cc0000;
-  border:none;
-  border-radius:10px;
-  color:#fff;
-  font-weight:600;
-  cursor:pointer;
-  font-size:15px;
-  transition:.3s;
+width:100%;
+padding:14px;
+background:#cc0000;
+border:none;
+border-radius:10px;
+color:#fff;
+font-weight:600;
+cursor:pointer;
+font-size:15px;
 }
 
 button:hover{
-  background:#a80000;
+background:#a80000;
 }
 
 #message{
-  margin-bottom:15px;
-  font-size:14px;
-  min-height:20px;
+margin-bottom:15px;
+font-size:14px;
+min-height:20px;
 }
 
 .success{color:#00cc66;}
 .error{color:#ff4d4d;}
 </style>
 </head>
+
 <body>
 
 <div class="form-box">
+
 <h1>Kayıt Ol</h1>
-<h5>(E-Posta gelmedi ise spam klasörünü kontrol edin.)</h5>
+
 <div id="message"></div>
 
 <form id="registerForm">
+
 <input id="name" placeholder="Ad Soyad *" required>
 <input id="email" type="email" placeholder="E-posta *" required>
 <input id="phone" placeholder="Telefon *" required>
@@ -97,22 +99,27 @@ button:hover{
 <input id="password2" type="password" placeholder="Şifre Tekrar *" required>
 
 <button type="submit">Kayıt Ol</button>
+
 </form>
 </div>
 
-<script type="module">
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.11.1/firebase-app.js";
-import { getAuth, createUserWithEmailAndPassword, sendEmailVerification } from "https://www.gstatic.com/firebasejs/10.11.1/firebase-auth.js";
-import { getFirestore, doc, setDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.11.1/firebase-firestore.js";
 
-/* Firebase Config */
+<script type="module">
+
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.11.1/firebase-app.js";
+import { getAuth, createUserWithEmailAndPassword, sendEmailVerification }
+from "https://www.gstatic.com/firebasejs/10.11.1/firebase-auth.js";
+
+import { getFirestore, doc, setDoc, serverTimestamp }
+from "https://www.gstatic.com/firebasejs/10.11.1/firebase-firestore.js";
+
 const firebaseConfig = {
-  apiKey: "AIzaSyChTIs-88nIFeSsVuF2aMFJigwITWb3lbU",
-  authDomain: "konigboard.firebaseapp.com",
-  projectId: "konigboard",
-  storageBucket: "konigboard.firebasestorage.app",
-  messagingSenderId: "542862934182",
-  appId: "1:542862934182:web:927ee1271cb5430fd4b467"
+apiKey: "AIzaSyChTIs-88nIFeSsVuF2aMFJigwITWb3lbU",
+authDomain: "konigboard.firebaseapp.com",
+projectId: "konigboard",
+storageBucket: "konigboard.firebasestorage.app",
+messagingSenderId: "542862934182",
+appId: "1:542862934182:web:927ee1271cb5430fd4b467"
 };
 
 const app = initializeApp(firebaseConfig);
@@ -123,52 +130,56 @@ const form = document.getElementById("registerForm");
 const message = document.getElementById("message");
 
 form.addEventListener("submit", async (e)=>{
-  e.preventDefault();
 
-  const name = document.getElementById("name").value.trim();
-  const email = document.getElementById("email").value.trim();
-  const phone = document.getElementById("phone").value.trim();
-  const companyName = document.getElementById("companyName").value.trim();
-  const companyType = document.getElementById("companyType").value;
-  const password = document.getElementById("password").value;
-  const password2 = document.getElementById("password2").value;
+e.preventDefault();
 
-  message.innerHTML = "";
+const name = name.value.trim();
+const email = document.getElementById("email").value.trim();
+const phone = document.getElementById("phone").value.trim();
+const companyName = document.getElementById("companyName").value.trim();
+const companyType = document.getElementById("companyType").value;
+const password = document.getElementById("password").value;
+const password2 = document.getElementById("password2").value;
 
-  if(password !== password2){
-    message.innerHTML = '<div class="error">Şifreler uyuşmuyor.</div>';
-    return;
-  }
+message.innerHTML="";
 
-  try{
-    const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-    const user = userCredential.user;
+if(password !== password2){
+message.innerHTML='<div class="error">Şifreler uyuşmuyor</div>';
+return;
+}
 
-    // 🔥 Email doğrulama gönder
-    await sendEmailVerification(user);
+try{
 
-    // 🔥 Firestore’a kaydet
-    await setDoc(doc(db,"users",user.uid),{
-      name,
-      email,
-      phone,
-      companyName,
-      companyType,
-      role:"owner",
-      status:"pending",
-      subscription:null,
-      createdAt: serverTimestamp()
-    });
+const cred = await createUserWithEmailAndPassword(auth,email,password);
 
-    message.innerHTML = '<div class="success">Kayıt başarılı! Lütfen e-posta adresinizi doğrulayın.</div>';
+const user = cred.user;
 
-    form.reset();
+await sendEmailVerification(user);
 
-  }catch(err){
-    message.innerHTML = '<div class="error">'+ err.message +'</div>';
-  }
+await setDoc(doc(db,"users",user.uid),{
+
+name,
+email,
+phone,
+companyName,
+companyType,
+status:"pending",
+role:"owner",
+subscription:null,
+createdAt: serverTimestamp()
 
 });
+
+window.location.href="verify-email.html";
+
+}catch(err){
+
+message.innerHTML='<div class="error">'+err.message+'</div>';
+
+}
+
+});
+
 </script>
 
 </body>
