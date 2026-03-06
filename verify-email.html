@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+
+<meta charset="UTF-8">
+<title>E-posta Doğrulama</title>
+
+<style>
+
+body{
+background:#0d0d0d;
+color:#fff;
+font-family:Poppins;
+display:flex;
+align-items:center;
+justify-content:center;
+height:100vh;
+text-align:center;
+}
+
+.box{
+background:#141414;
+padding:40px;
+border-radius:16px;
+max-width:420px;
+}
+
+button{
+margin-top:20px;
+padding:12px 20px;
+background:#cc0000;
+border:none;
+color:#fff;
+border-radius:8px;
+cursor:pointer;
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="box">
+
+<h2>E-posta gönderildi</h2>
+
+<p>
+
+E-posta adresinize doğrulama linki gönderdik.
+
+Maildeki linke tıkladıktan sonra aşağıdaki butona basın.
+
+</p>
+
+<button id="continueBtn">
+
+Maili Doğruladım
+
+</button>
+
+</div>
+
+
+<script type="module">
+
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.11.1/firebase-app.js";
+import { getAuth, reload }
+from "https://www.gstatic.com/firebasejs/10.11.1/firebase-auth.js";
+
+const firebaseConfig = {
+apiKey: "AIzaSyChTIs-88nIFeSsVuF2aMFJigwITWb3lbU",
+authDomain: "konigboard.firebaseapp.com",
+projectId: "konigboard",
+storageBucket: "konigboard.firebasestorage.app",
+messagingSenderId: "542862934182",
+appId: "1:542862934182:web:927ee1271cb5430fd4b467"
+};
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+
+document.getElementById("continueBtn").onclick = async ()=>{
+
+const user = auth.currentUser;
+
+if(!user){
+alert("Giriş yapmanız gerekiyor");
+return;
+}
+
+await reload(user);
+
+if(user.emailVerified){
+
+window.location.href="pricing.html";
+
+}else{
+
+alert("Mail henüz doğrulanmadı.");
+
+}
+
+};
+
+</script>
+
+</body>
+</html>
