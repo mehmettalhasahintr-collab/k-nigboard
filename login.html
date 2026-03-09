@@ -138,13 +138,20 @@ document.getElementById("loginBtn").onclick = async () => {
     const cred = await signInWithEmailAndPassword(auth, email, password);
     const userAuth = cred.user;
 
+    await userAuth.reload();
+
+if(!userAuth.emailVerified){
+  errorBox.textContent = "Lütfen önce mailinizi doğrulayın.";
+  return;
+}
+
     // Firestore kaydını al
     const snap = await getDoc(doc(db,"users", userAuth.uid));
 
     if(!snap.exists()){
-      errorBox.textContent = "Sistem kaydı bulunamadı.";
-      return;
-    }
+  errorBox.textContent = "Kullanıcı verisi oluşturulmamış.";
+  return;
+}
 
     const user = snap.data();
 
@@ -174,7 +181,9 @@ document.getElementById("resetBtn").onclick = async () => {
     return;
   }
   try{
-    await sendPasswordResetEmail(auth,email);
+    await sendPasswordResetEmail(auth,email,{
+  url:"https://www.konigboard.com/login.html"
+});
     errorBox.textContent = "Şifre sıfırlama e-postası gönderildi.";
   }catch(err){
     errorBox.textContent = "Mail gönderilemedi.";
