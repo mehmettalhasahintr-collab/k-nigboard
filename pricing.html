@@ -1,222 +1,495 @@
 <!DOCTYPE html>
 <html lang="tr">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+
 <title>KönigBoard | Fiyatlandırma</title>
 
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
 
 <style>
-body{
+
+*{
   margin:0;
-  font-family:Poppins,system-ui;
-  background:#0d0d0d;
+  padding:0;
+  box-sizing:border-box;
+}
+
+body{
+  background:#0b0b0b;
   color:#fff;
+  font-family:Poppins,system-ui;
 }
-.section{
-  padding:100px 8%;
-  text-align:center;
+
+header{
+  padding:28px 8%;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  border-bottom:1px solid #1b1b1b;
 }
-h1{
-  font-size:42px;
+
+.logo{
+  font-size:24px;
+  font-weight:700;
   color:#cc0000;
 }
-.subtitle{
-  color:#bbb;
-  max-width:720px;
-  margin:20px auto 60px;
-  font-size:16px;
+
+.top-btn{
+  background:#cc0000;
+  color:#fff;
+  border:none;
+  padding:12px 18px;
+  border-radius:10px;
+  font-weight:600;
+  cursor:pointer;
 }
+
+.top-btn:hover{
+  background:#a80000;
+}
+
+.hero{
+  padding:90px 8% 50px;
+  text-align:center;
+}
+
+.hero h1{
+  font-size:52px;
+  line-height:1.1;
+  margin-bottom:24px;
+}
+
+.hero h1 span{
+  color:#cc0000;
+}
+
+.hero p{
+  max-width:760px;
+  margin:auto;
+  color:#aaa;
+  line-height:1.7;
+  font-size:17px;
+}
+
+.toggle{
+  margin-top:40px;
+  display:inline-flex;
+  background:#141414;
+  padding:6px;
+  border-radius:14px;
+  border:1px solid #222;
+}
+
+.toggle button{
+  border:none;
+  background:transparent;
+  color:#aaa;
+  padding:12px 22px;
+  border-radius:10px;
+  cursor:pointer;
+  font-weight:600;
+  transition:.2s;
+}
+
+.toggle button.active{
+  background:#cc0000;
+  color:#fff;
+}
+
 .pricing{
+  padding:30px 8% 100px;
   display:grid;
-  grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
+  grid-template-columns:repeat(auto-fit,minmax(300px,1fr));
   gap:30px;
 }
-.plan{
-  background:#141414;
-  border-radius:18px;
-  padding:40px 30px;
+
+.card{
+  background:#131313;
   border:1px solid #222;
+  border-radius:24px;
+  padding:34px;
   position:relative;
-  transition:.3s;
+  transition:.25s;
 }
-.plan:hover{
+
+.card:hover{
   transform:translateY(-8px);
   border-color:#cc0000;
 }
-.plan.popular{
+
+.popular{
   border:2px solid #cc0000;
-  box-shadow:0 0 30px rgba(204,0,0,.4);
+  box-shadow:0 0 40px rgba(204,0,0,.18);
 }
+
 .badge{
   position:absolute;
   top:-14px;
   left:50%;
   transform:translateX(-50%);
   background:#cc0000;
-  padding:6px 14px;
-  border-radius:20px;
+  color:#fff;
+  padding:7px 16px;
+  border-radius:999px;
   font-size:12px;
-  font-weight:600;
-}
-.plan h2{
-  font-size:24px;
-  margin-bottom:10px;
-}
-.price{
-  font-size:38px;
   font-weight:700;
-  margin:20px 0;
 }
-.price span{
-  font-size:14px;
-  color:#aaa;
+
+.plan{
+  font-size:26px;
+  font-weight:700;
 }
-ul{
+
+.desc{
+  color:#888;
+  margin-top:10px;
+  line-height:1.6;
+  min-height:50px;
+}
+
+.price{
+  margin-top:28px;
+  font-size:48px;
+  font-weight:700;
+}
+
+.period{
+  color:#888;
+  font-size:15px;
+}
+
+.features{
   list-style:none;
-  padding:0;
-  text-align:left;
-  margin:30px 0;
+  margin-top:28px;
 }
-ul li{
-  margin:10px 0;
+
+.features li{
+  margin-bottom:14px;
   color:#ccc;
   font-size:15px;
 }
-ul li::before{
+
+.features li::before{
   content:"✔";
   color:#cc0000;
-  margin-right:8px;
+  margin-right:10px;
 }
-button{
+
+.select-btn{
   width:100%;
-  padding:14px;
+  margin-top:34px;
   border:none;
-  border-radius:10px;
   background:#cc0000;
   color:#fff;
-  font-weight:600;
-  font-size:16px;
+  padding:15px;
+  border-radius:12px;
+  font-size:15px;
+  font-weight:700;
   cursor:pointer;
 }
-button:hover{background:#a80000}
 
-.note{
-  margin-top:60px;
-  color:#888;
-  font-size:14px;
+.select-btn:hover{
+  background:#a80000;
 }
+
+.loading{
+  position:fixed;
+  inset:0;
+  background:#0b0b0b;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  z-index:999;
+  font-size:18px;
+}
+
+@media(max-width:700px){
+
+  .hero h1{
+    font-size:38px;
+  }
+
+  .pricing{
+    padding-top:10px;
+  }
+
+}
+
 </style>
 </head>
 <body>
 
-<section class="section" id="fiyat">
-  <h1>Fiyatlandırma</h1>
-  <p class="subtitle">
-    Şirketiniz için doğru planı seçin.  
-    Yıllık ödemede <b>2 ay ücretsiz</b> avantajdan yararlanın.
+<div class="loading" id="loading">
+  Kontrol ediliyor...
+</div>
+
+<header>
+  <div class="logo">KönigBoard</div>
+
+  <button class="top-btn" onclick="logout()">
+    Çıkış Yap
+  </button>
+</header>
+
+<section class="hero">
+
+  <h1>
+    Şirketinizi <span>profesyonelce</span> yönetin
+  </h1>
+
+  <p>
+    Üretim, muhasebe, personel, stok ve yönetim süreçlerinizi
+    tek panelden yönetin.
   </p>
 
-  <!-- TOGGLE -->
-  <div class="billing-toggle">
-    <button id="monthlyBtn" class="active">Aylık</button>
-    <button id="yearlyBtn">Yıllık <span>(10 Ay)</span></button>
+  <div class="toggle">
+    <button class="active" id="monthlyBtn">Aylık</button>
+    <button id="yearlyBtn">Yıllık (%16 indirim)</button>
   </div>
 
-  <div class="pricing">
-
-    <!-- BAŞLANGIÇ -->
-    <div class="plan">
-      <h2>Başlangıç</h2>
-      <div class="price" data-month="4999" data-year="49990">₺4.999</div>
-      <span class="period">/ ay</span>
-      <ul>
-        <li>10 kullanıcı</li>
-        <li>Temel yönetim paneli</li>
-        <li>Gelir – gider takibi</li>
-        <li>Tek üretim hattı</li>
-        <li>Günlük yedekleme</li>
-      </ul>
-      <button onclick="selectPlan('baslangic')">Planı Seç</button>
-    </div>
-
-    <!-- PROFESYONEL -->
-    <div class="plan popular">
-      <div class="badge">EN POPÜLER</div>
-      <h2>Profesyonel</h2>
-      <div class="price" data-month="11999" data-year="119990">₺11.999</div>
-      <span class="period">/ ay</span>
-      <ul>
-        <li>50 kullanıcı</li>
-        <li>Tüm modüller</li>
-        <li>Gelişmiş muhasebe</li>
-        <li>Çoklu üretim hattı</li>
-        <li>Raporlama & analiz</li>
-      </ul>
-      <button onclick="selectPlan('profesyonel')">Planı Seç</button>
-    </div>
-
-    <!-- KURUMSAL -->
-    <div class="plan">
-      <h2>Kurumsal</h2>
-      <div class="price" data-month="24.999" data-year="249990">₺24.999</div>
-      <span class="period">/ ay</span>
-      <ul>
-        <li>Sınırsız kullanıcı</li>
-        <li>Tüm modüller</li>
-        <li>ERP & API entegrasyonu</li>
-        <li>Özel güvenlik</li>
-        <li>7/24 destek</li>
-      </ul>
-      <button onclick="selectPlan('kurumsal')">Planı Seç</button>
-    </div>
-
-  </div>
 </section>
 
-<script>
-function go(){
-  window.location.href="login.html";
-}
-function contact(){
-  window.location.href="#iletisim";
-}
-</script>
-<script>
+<section class="pricing">
+
+  <!-- Başlangıç -->
+  <div class="card">
+
+    <div class="plan">Başlangıç</div>
+
+    <div class="desc">
+      Küçük işletmeler için temel yönetim sistemi.
+    </div>
+
+    <div class="price" data-month="4999" data-year="49990">
+      ₺4.999
+    </div>
+
+    <div class="period">/ ay</div>
+
+    <ul class="features">
+      <li>10 kullanıcı</li>
+      <li>Temel yönetim paneli</li>
+      <li>Gelir – gider sistemi</li>
+      <li>Günlük yedekleme</li>
+    </ul>
+
+    <button class="select-btn" onclick="selectPlan('baslangic')">
+      Planı Seç
+    </button>
+
+  </div>
+
+  <!-- Profesyonel -->
+  <div class="card popular">
+
+    <div class="badge">
+      EN POPÜLER
+    </div>
+
+    <div class="plan">Profesyonel</div>
+
+    <div class="desc">
+      Orta ve büyük işletmeler için tam yönetim çözümü.
+    </div>
+
+    <div class="price" data-month="11999" data-year="119990">
+      ₺11.999
+    </div>
+
+    <div class="period">/ ay</div>
+
+    <ul class="features">
+      <li>50 kullanıcı</li>
+      <li>Tüm modüller</li>
+      <li>Raporlama sistemi</li>
+      <li>Çoklu üretim hattı</li>
+      <li>Öncelikli destek</li>
+    </ul>
+
+    <button class="select-btn" onclick="selectPlan('profesyonel')">
+      Planı Seç
+    </button>
+
+  </div>
+
+  <!-- Kurumsal -->
+  <div class="card">
+
+    <div class="plan">Kurumsal</div>
+
+    <div class="desc">
+      Büyük şirketler için sınırsız sistem erişimi.
+    </div>
+
+    <div class="price" data-month="24999" data-year="249990">
+      ₺24.999
+    </div>
+
+    <div class="period">/ ay</div>
+
+    <ul class="features">
+      <li>Sınırsız kullanıcı</li>
+      <li>ERP entegrasyonu</li>
+      <li>Özel güvenlik</li>
+      <li>API erişimi</li>
+      <li>7/24 destek</li>
+    </ul>
+
+    <button class="select-btn" onclick="selectPlan('kurumsal')">
+      Planı Seç
+    </button>
+
+  </div>
+
+</section>
+
+<script type="module">
+
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.11.1/firebase-app.js";
+
+import {
+  getAuth,
+  onAuthStateChanged,
+  signOut
+} from "https://www.gstatic.com/firebasejs/10.11.1/firebase-auth.js";
+
+import {
+  getFirestore,
+  doc,
+  getDoc
+} from "https://www.gstatic.com/firebasejs/10.11.1/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyChTIs-88nIFeSsVuF2aMFJigwITWb3lbU",
+  authDomain: "konigboard.firebaseapp.com",
+  projectId: "konigboard",
+  storageBucket: "konigboard.firebasestorage.app",
+  messagingSenderId: "542862934182",
+  appId: "1:542862934182:web:927ee1271cb5430fd4b467"
+};
+
+const app = initializeApp(firebaseConfig);
+
+const auth = getAuth(app);
+const db = getFirestore(app);
+
+const loading = document.getElementById("loading");
+
+onAuthStateChanged(auth, async(user)=>{
+
+  if(!user){
+    window.location.href = "login.html";
+    return;
+  }
+
+  await user.reload();
+
+  if(!user.emailVerified){
+    window.location.href = "verify-email.html";
+    return;
+  }
+
+  try{
+
+    const snap = await getDoc(doc(db,"users",user.uid));
+
+    if(snap.exists()){
+
+      const data = snap.data();
+
+      const sub = data.subscription;
+
+const expires =
+  sub?.expiresAt?.toMillis
+    ? sub.expiresAt.toMillis()
+    : sub?.expiresAt;
+
+const hasActiveSub =
+  sub &&
+  sub.active === true &&
+  (!expires || expires > Date.now());
+
+      if(hasActiveSub){
+        window.location.href = "https://konigboardyonetici.vercel.app";
+        return;
+      }
+
+    }
+
+    loading.style.display = "none";
+
+  }catch(e){
+
+loading.innerHTML = "Bir hata oluştu.";
+loading.style.display = "flex";
+
+  }
+
+});
+
+window.logout = async () => {
+
+  await signOut(auth);
+
+  window.location.href = "login.html";
+
+};
+
 let billing = "monthly";
 
 const monthlyBtn = document.getElementById("monthlyBtn");
 const yearlyBtn = document.getElementById("yearlyBtn");
+
 const prices = document.querySelectorAll(".price");
 const periods = document.querySelectorAll(".period");
 
-monthlyBtn.onclick = () => setBilling("monthly");
-yearlyBtn.onclick = () => setBilling("yearly");
+monthlyBtn.onclick = ()=> setBilling("monthly");
+yearlyBtn.onclick = ()=> setBilling("yearly");
 
 function setBilling(type){
+
   billing = type;
 
   monthlyBtn.classList.toggle("active", type==="monthly");
   yearlyBtn.classList.toggle("active", type==="yearly");
 
-  prices.forEach(p=>{
-    const val = type==="monthly" ? p.dataset.month : p.dataset.year;
-    p.textContent = "₺" + Number(val).toLocaleString("tr-TR");
+  prices.forEach(price=>{
+
+    const value =
+      type==="monthly"
+      ? price.dataset.month
+      : price.dataset.year;
+
+    price.textContent =
+      "₺" + Number(value).toLocaleString("tr-TR");
+
   });
 
-  periods.forEach(per=>{
-    per.textContent = type==="monthly" ? "/ ay" : "/ yıl";
+  periods.forEach(period=>{
+
+    period.textContent =
+      type==="monthly"
+      ? "/ ay"
+      : "/ yıl";
+
   });
+
 }
 
-function selectPlan(plan){
+window.selectPlan = (plan)=>{
+
   localStorage.setItem("selectedPlan", JSON.stringify({
-    plan: plan,
-    billing: billing
+    plan,
+    billing
   }));
-  window.location.href = "login.html";
-}
+
+  window.location.href = "payment.html";
+
+};
+
 </script>
+
 </body>
 </html>

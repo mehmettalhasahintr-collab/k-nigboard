@@ -71,40 +71,71 @@ Maili Doğruladım
 </div>
 
 <script type="module">
-
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.11.1/firebase-app.js";
-import { getAuth } from "https://www.gstatic.com/firebasejs/10.11.1/firebase-auth.js";
+import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.11.1/firebase-auth.js";
 
 const firebaseConfig = {
-apiKey: "AIzaSyChTIs-88nIFeSsVuF2aMFJigwITWb3lbU",
-authDomain: "konigboard.firebaseapp.com",
-projectId: "konigboard",
-storageBucket: "konigboard.firebasestorage.app",
-messagingSenderId: "542862934182",
-appId: "1:542862934182:web:927ee1271cb5430fd4b467"
+  apiKey: "AIzaSyChTIs-88nIFeSsVuF2aMFJigwITWb3lbU",
+  authDomain: "konigboard.firebaseapp.com",
+  projectId: "konigboard",
+  storageBucket: "konigboard.firebasestorage.app",
+  messagingSenderId: "542862934182",
+  appId: "1:542862934182:web:927ee1271cb5430fd4b467"
 };
 
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 
-document.getElementById("continueBtn").onclick = async ()=>{
+let interval = null;
 
-const user = auth.currentUser;
+onAuthStateChanged(auth, (user) => {
 
-await user.reload();
+  if (!user) {
+    window.location.href = "login.html";
+    return;
+  }
 
-if(user.emailVerified){
+  if (interval) clearInterval(interval);
 
-window.location.href="pricing.html";
+  interval = setInterval(async () => {
 
-}else{
+    const u = auth.currentUser;
+    if (!u) return;
 
-alert("Mail henüz doğrulanmamış.");
+    try {
+      await u.reload();
 
-}
+      if (u.emailVerified) {
+        clearInterval(interval);
+        window.location.href = "pricing.html";
+      }
 
-};
+    } catch (e) {
+      console.log("reload error:", e);
+    }
 
+  }, 3000);
+
+  const btn = document.getElementById("continueBtn");
+
+  if (btn) {
+    btn.addEventListener("click", async () => {
+
+      const u = auth.currentUser;
+      if (!u) return;
+
+      await u.reload();
+
+      if (u.emailVerified) {
+        window.location.href = "pricing.html";
+      } else {
+        alert("Mail henüz doğrulanmamış.");
+      }
+
+    });
+  }
+
+});
 </script>
 
 </body>

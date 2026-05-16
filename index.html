@@ -1545,7 +1545,7 @@ document.getElementById('calcBtn').addEventListener('click', ()=>{
       </p>
 
       <!-- NEWSLETTER (GERÇEKÇİ) -->
-      <form class="newsletter" onsubmit="newsletterSubmit(event)">
+      <form id="newsletterForm" class="newsletter">
         <label>📩 Güncellemelerden Haberdar Olun</label>
         <div class="newsletter-input">
           <input type="email" id="newsletterEmail" placeholder="E-posta adresiniz" required>
@@ -1762,11 +1762,14 @@ footer::before {
 // Logo animasyonu ve footer newsletter bildirimi
 document.addEventListener("DOMContentLoaded", ()=>{
   const form = document.getElementById("newsletterForm");
-  form.addEventListener("submit",(e)=>{
+
+  form.addEventListener("submit", (e)=>{
     e.preventDefault();
-    const email = document.getElementById("newsletterEmail").value.trim();
+
+    const email = document.getElementById("newsletterEmail").value;
+
     if(email){
-      alert(`✅ ${email} e-posta adresiyle abone olundu!`);
+      alert("Abone olundu: " + email);
       form.reset();
     }
   });
